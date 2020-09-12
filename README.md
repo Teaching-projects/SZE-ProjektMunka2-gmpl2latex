@@ -1,0 +1,1 @@
+# SZE-ProjektMunka2-gmpl2latex
