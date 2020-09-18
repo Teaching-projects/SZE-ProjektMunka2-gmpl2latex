@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+
+
+<h4>Variables</h4>
+
+<dl>
+    <dt>\(x_1\)</dt> <dd>The amount of Kisfroccs we sell</dd>
+    <dt>\(x_2\)</dt> <dd>The amount of Nagyfroccs we sell</dd>
+    <dt>\(x_3\)</dt> <dd>The amount of Hosszulepes we sell</dd>
+</dl>
+
+<h4>Constraints</h4>
+
+<p class="description">
+    This equation enforces that we don't use more than 100 l of wine.
+</p>
+
+<p>
+    \[ 0.1 \cdot x_1 + 0.2 \cdot x_2 + 0.1 \cdot x_3 \le 100 \]
+</p>
+
+<p class="description">
+    This is a similar constraint that limits the usage of carbonated water to 150l.
+</p>
+
+<p>
+    \[ 0.1 \cdot x_1 + 0.1 \cdot x_2 + 0.2 \cdot x_3 \le 150 \]
+</p>
+
+<h4>Objective</h4>
+
+<p class="description">
+    The objective is to maximize the profit, with 120, 210, and 140 HUF of a price for a portion of Kisfroccs, Nagyfroccs, Hosszulepes, respectively.
+</p>
+
+<p>
+    \[ 120\cdot x_1 + 210\cdot x_2 + 140\cdot x_3 \to \max \]
+</p>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</body>
+
+</html>

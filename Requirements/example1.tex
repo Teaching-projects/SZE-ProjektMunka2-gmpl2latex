@@ -1,0 +1,29 @@
+\documentclass{article}
+
+\begin{document}
+
+    \subsubsection*{Variables}
+
+    \begin{description}
+        \item[$x_1$] The amount of Kisfroccs we sell
+        \item[$x_2$] The amount of Nagyfroccs we sell
+        \item[$x_3$] The amount of Hosszulepes we sell 
+    \end{description}
+
+    \subsubsection*{Constraints}
+
+    This equation enforces that we don't use more than 100 l of wine.
+
+    $$ 0.1 \cdot x_1 + 0.2 \cdot x_2 + 0.1 \cdot x_3 \le 100 $$
+
+    This is a similar constraint that limits the usage of carbonated water to 150l.
+
+    $$ 0.1 \cdot x_1 + 0.1 \cdot x_2 + 0.2 \cdot x_3 \le 150 $$
+
+    \subsubsection*{Objective}
+
+    The objective is to maximize the profit, with 120, 210, and 140 HUF of a price for a portion of Kisfroccs, Nagyfroccs, Hosszulepes, respectively.
+
+    $$ 120\cdot x_1 + 210\cdot x_2 + 140\cdot x_3 \to \max $$
+
+\end{document}
