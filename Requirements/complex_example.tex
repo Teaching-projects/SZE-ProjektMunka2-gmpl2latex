@@ -1,0 +1,32 @@
+\documentclass{article}
+
+\begin{document}
+
+    \subsubsection*{Sets and parameters}
+    \begin{description}
+        \item[$R$] The set of resources
+        \item[$M$] The set of products
+        \item[$p^s_r$] [l] The available amount for resource $r\in R$
+        \item[$p^p_m$] [HUF/pcs] profit gained by selling a portion of product $m\in M$    
+        \item[$p^n_{m,r}$] [l/pcs] The amount of resource $r\in R$ needed to produce one portion of product $m\in M$ 
+    \end{description}
+
+    \subsubsection*{Variables}
+
+    \begin{description}
+        \item[$x_m\in[0,\infty[$] [pcs] The number of portions we produce of product $m\in M$
+    \end{description}
+
+    \subsubsection*{Constraints}
+
+    This equation ensures that the amount of resouce <r> required to produce all of the products is within the available stock.
+
+    $$ \sum_{m \in M}x_m\cdot p^n_{m,r} \le p^s_r \qquad \forall r\in R  $$
+
+    \subsubsection*{Objective}
+
+    The objective is to maximize the profit.
+
+    $$ \sum_{m \in M}x_m\cdot p^p_m \to \max $$
+
+\end{document}

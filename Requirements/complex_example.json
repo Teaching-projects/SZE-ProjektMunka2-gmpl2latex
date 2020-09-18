@@ -1,0 +1,20 @@
+{   
+    "Sets" : {
+        "Resources" : {
+            "name" : "R",
+            "default-index" : "r"
+        },
+        "Products"  : {
+            "name": "M",
+            "default-index" : "m"
+        }
+    },
+    "Parameters" : {
+        "stock" : "p^s",
+        "price" : "p^p",
+        "need" : "p^n"
+    },
+    "Variables" : {
+        "produce" : "x",
+    }    
+}
