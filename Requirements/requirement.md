@@ -63,7 +63,7 @@ JSON kód:
 ~~~
 
 ##HTML kimenet
-
+~~~html
 <!DOCTYPE html>
 <html>
 
@@ -119,6 +119,7 @@ JSON kód:
 </body>
 
 </html>
+~~~
 
 
 ##LateX kimenet
@@ -155,6 +156,6 @@ JSON kód:
 ~~~
 
 ##Generált pdf
-![alt text](https://github.com/Teaching-projects/SZE-ProjektMunka2-gmpl2latex/tree/master/Requirements/simple_example_output.png "Pdf output from Latex")
+![itt](https://github.com/Teaching-projects/SZE-ProjektMunka2-gmpl2latex/tree/master/Requirements/simple_example_output.png "Pdf output from Latex")
 
 
