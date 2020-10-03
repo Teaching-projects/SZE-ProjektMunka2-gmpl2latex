@@ -2,21 +2,21 @@
 
 A program legyen képes az alábbi kódrészletekből álló bemeneti álllományból LateX kódot generálni:
 
-Változó deklarálása  kezdeti megszorításokkal
-Megszorítások deklarálása
-Célfüggvény deklarálása
-Komment sorok  ezeket be kell illeszteni magyarázó szövegként a LateX dokumentumba a megfelelő helyre ha #! karakterekkel kezdődik
+*Változó deklarálása  kezdeti megszorításokkal
+*Megszorítások deklarálása
+*Célfüggvény deklarálása
+*Komment sorok  ezeket be kell illeszteni magyarázó szövegként a LateX dokumentumba a megfelelő helyre ha #! karakterekkel kezdődik
 
 A Latex kód generálása az alábbi két lépés segítségével történik:
 
 1. A program bemenete egy szintaktikailag helyes .mod kiterjesztésű fájl;  kimenete egy szöveges szerkeszthető állomány amelyben a felhasználó meghatározhatja a kigyűjtött változók, korlátozások és a célfüggvény azonosítóinak LateX megfelelőjét.
 2. A program bemenete a .mod fájl és az előző lépésben keletkezett szöveges állomány; kimenete .tex formátumú Latex fájl.
 
-Nem funkcionális követelmények
+Nem funkcionális követelmények:
+..*Legyen linux alatt használható.
 
-Legyen linux alatt használható.
-
-# Bemenet .mod
+## Bemenet .mod
+~~~ampl
 #######################
 ## VARIABLES ##########
 #######################
@@ -47,11 +47,12 @@ s.t. Carbonated_Water:
 
 maximize Profit:
     120*KF + 210*NF + 140*HL;
+~~~
 
-#End bemenet .mod
 
-#Szótár
-
+##Szótár
+JSON kód:
+~~~json
 {
     "Variables" : {
         "KF" : "x_1",
@@ -59,10 +60,9 @@ maximize Profit:
         "HL" : "x_3"
     }
 }
+~~~
 
-#End szótár
-
-#HTML kimenet
+##HTML kimenet
 
 <!DOCTYPE html>
 <html>
@@ -119,10 +119,10 @@ maximize Profit:
 </body>
 
 </html>
-#End HTML
 
-#LateX kimenet
 
+##LateX kimenet
+~~~tex
 \documentclass{article}
 
 \begin{document}
@@ -152,7 +152,9 @@ maximize Profit:
     $$ 120\cdot x_1 + 210\cdot x_2 + 140\cdot x_3 \to \max $$
 
 \end{document}
+~~~
 
-#End LateX
+##Generált pdf
+![alt text](https://github.com/Teaching-projects/SZE-ProjektMunka2-gmpl2latex/tree/master/Requirements/simple_example_output.png "Pdf output from Latex")
 
-#LateX2Pdf
+
