@@ -1,3 +1,10 @@
+# Csapattagok
+
+- Vörös Bence László @vbence121
+- Gönczi Gábor @GoncziGabor
+- Lőrincz Erik @eriklorincz
+- Radvánszky István @radvanszkyI
+
 # Főbb megvalósítandó funkciók
 
 A program legyen képes az alábbi kódrészletekből álló bemeneti álllományból LateX kódot generálni:
