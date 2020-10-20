@@ -12,6 +12,7 @@ ALPHABET    [a-zA-Z]
 "exit"                                       return '\0';
 "var"                                        return VARKEYWORD;
 "s.t."                                       return STKEYWORD;
+("minimize"|"maximize")                      return RESTWORD;
 (">="|"<="|"=")                              return REL;
 "binary"                                     return BIN;
 "integer"                                    return INT;
