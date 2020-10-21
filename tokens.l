@@ -13,12 +13,12 @@ ALPHABET    [a-zA-Z]
 "var"                                        return VARKEYWORD;
 "s.t."                                       return STKEYWORD;
 ("minimize"|"maximize")                      return RESTWORD;
-(">="|"<="|"=")                              return REL;
+(">="|"<="|"=")                              {strcpy(yylval.name, yytext);return REL;}
 "binary"                                     return BIN;
 "integer"                                    return INT;
 ";"                                          return LINEEND;
 "#!"                                         return SCOMMENT;
-[1-9]({DIGITS})*                             {yylval.val = std::atoi(yytext); return NUMBER;}
+[0-9]({DIGITS})*                             {yylval.val = std::atoi(yytext); return NUMBER;}
 {ALPHABET}({ALPHABET}|{DIGITS})*             {strcpy(yylval.name, yytext); return ID;}
 \n                                           return '\n';/*skip newline*/
 [ \t]                                        ;
