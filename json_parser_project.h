@@ -1,6 +1,4 @@
-
-
-
+#include <iostream>
 /*c++ libraries include*/
 #include <iostream>
 #include <map>
@@ -9,13 +7,16 @@
 #include <fstream>
 #include <stdarg.h>
 /*Rapidjson includes*/
-#include "rapidjson/include/rapidjson/filereadstream.h"
-#include "rapidjson/include/rapidjson/document.h"
-#include "rapidjson/include/rapidjson/writer.h"
-#include "rapidjson/include/rapidjson/filewritestream.h"
+#include "filereadstream.h"
+#include "document.h"
+#include "writer.h"
+#include "filewritestream.h"
+#include "prettywriter.h"
+//Header contains declaration
 using namespace rapidjson;
 using namespace std;
 
+typedef std::vector<std::string> STLCONTAINER;
 
 void ObjectParser(rapidjson::Value::ConstObject o, std::map<std::string, std::string>&eredmenyMap) {
 
@@ -70,58 +71,112 @@ std::map<std::string, std::string>JSON_TO_MAP(const char* fname, const char*mod)
 	return eredmenyMap;
 
 }
-void createJSON(const char* fname, int componentsCount...) {
-	FILE* fileCreator = fopen(fname, "ab+");
-	fclose(fileCreator);
+Value ObjectCreator(STLCONTAINER next,Document&output) {
+	Value ret(kObjectType);
+	Value name(kStringType);
+	Value val(kObjectType);
+	Document::AllocatorType& allocator = output.GetAllocator();
+	for (STLCONTAINER::iterator it = next.begin(); it != next.end(); ++it) {
+		std::string tmp = *it;
+		val.SetString((*it).c_str(), static_cast<SizeType>((*it).length()), allocator);
+		name.SetString(tmp.c_str(), allocator);
+		ret.AddMember(name, val, allocator);
+	}
+	return ret;
+}
+Value setofSetsCreator(STLCONTAINER next, Document&output) {
+	Value ret(kObjectType);
+	Value name(kStringType);
+	Value val(kObjectType);
+	Document::AllocatorType& allocator = output.GetAllocator();
+	for (STLCONTAINER::iterator it = next.begin(); it != next.end(); ++it) {
+		Value tmpSet(kObjectType);
+		std::string tmp = *it;
+		std::string tmpVal = tmp;
+		std::string tmpName = tmp+"_name";
+		tmpVal = toupper(tmp[0]);
+		val.SetString(tmpVal.c_str(), static_cast<SizeType>(tmpVal.length()), allocator);
+		name.SetString(tmpName.c_str(), allocator);
+		tmpSet.AddMember(name, val, allocator);
+		tmpName = tmp+"_default-index";
+		tmpVal = tolower(tmp[0]);
+		val.SetString(tmpVal.c_str(), static_cast<SizeType>(tmpVal.length()), allocator);
+		name.SetString(tmpName.c_str(), allocator);
+		tmpSet.AddMember(name, val, allocator);
+		ret.AddMember(Value(tmp.c_str(), static_cast<SizeType>(tmp.length()), allocator), tmpSet, allocator);
+	}
+	return ret;
+}
+
+Document createJSON(int componentsCount...) {
+
 	std::vector<std::string> tmpVector;
 	Document output;
 	output.SetObject();
-	Document::AllocatorType& allocator = output.GetAllocator();
-	Value mainObject(kObjectType);
-	Value setObject(kObjectType);
-	Value underSetObject(kObjectType);
-	Value parameters(kObjectType);
-	Value variables(kObjectType);
-	Value tmpVal(kObjectType);
-
 	va_list components;
 	va_start(components, componentsCount);
-	for (int i = 0; i < componentsCount; i++)
+	if (componentsCount == 1) {
+		tmpVector = va_arg(components, STLCONTAINER);
+		output.AddMember("Variables", ObjectCreator(tmpVector, output), output.GetAllocator());
+	}
+	else
 	{
-		if (componentsCount == 1) {
-			tmpVector = va_arg(components, std::vector<std::string>);
-			for (int j = 0; j < tmpVector.size(); j++)
-			{
-				Value name((tmpVector[j]).c_str(), allocator);
-				tmpVal.SetString((tmpVector[j]).c_str(), static_cast<SizeType>(tmpVector[j].length()), allocator);
-				variables.AddMember(name, tmpVal, allocator);
-			}
-			output.AddMember("Variables", variables, allocator);
+		for (int i = 0; i < componentsCount; i++)
+		{
+			tmpVector = va_arg(components, STLCONTAINER);
+			if (i == 0) { output.AddMember("Sets", setofSetsCreator(tmpVector, output), output.GetAllocator()); }
+			else if (i == 1) { output.AddMember("Parameters", ObjectCreator(tmpVector, output), output.GetAllocator()); }
+			else if (i == 2) { output.AddMember("Variables", ObjectCreator(tmpVector, output), output.GetAllocator()); }
+			/*{
+			case 0:output.AddMember("Sets", setofSetsCreator(tmpVector, output), output.GetAllocator());
+				break;
+			case 1:output.AddMember("Parameters", ObjectCreator(tmpVector,output), output.GetAllocator());
+				break;
+			case 2:output.AddMember("Variables", ObjectCreator(tmpVector, output), output.GetAllocator());
+				break;
+			}*/
 
 		}
 	}
 	va_end(components);
-	FILE* fp = fopen(fname, "wb"); // non-Windows use "w"
+	return output;
+	//output.AddMember("Sets", setObject, output.GetAllocator());
 
+
+}
+void writeToFile(const char*fname, Document&output) {
+	FILE* fileCreator = fopen(fname, "ab+");
+	fclose(fileCreator);
+	FILE* fp = fopen(fname, "wb"); // non-Windows use "w"
 	char writeBuffer[65536];
 	FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
-
-	Writer<FileWriteStream> writer(os);
-	output.Accept(writer);
-
+	PrettyWriter<FileWriteStream> pwriter(os);
+	output.Accept(pwriter);
 	fclose(fp);
 }
-void test() {
+
+
+int main()
+{
+	std::vector<std::string> setst;
+	std::vector<std::string> params;
 	std::vector<std::string> vars;
 	std::map<std::string, std::string>eredmenymap;
+	Document output;
 	vars.push_back("var1");
 	vars.push_back("var2");
 	vars.push_back("x");
-	createJSON("example.json", 1, vars);
-	eredmenymap = JSON_TO_MAP("example.json", "rb");
+	params.push_back("p1");
+	params.push_back("p2");
+	setst.push_back("Resources");
+	setst.push_back("Products");
+	output=createJSON(3,setst,params,vars);
+	writeToFile("example.json", output);
+	eredmenymap=JSON_TO_MAP("example.json", "rb");
 
-	for (std::map<std::string, std::string>::iterator it = eredmenymap.begin(); it != eredmenymap.end(); ++it)
+	/*for (std::map<std::string, std::string>::iterator it=eredmenymap.begin();it!=eredmenymap.end();++it)
 	{
 		std::cout << it->first << '\t' << it->second << '\n';
-	}
+	}*/
+	
 }
