@@ -23,87 +23,62 @@
 {
     char name[16];
     int  val;
-    char st[16];
-    char longname[32];
+    char comment[1024];
+    enum relations {"<=","=",">="};
+    enum obj_relations {"minimize","maximize"};
 }
 
 
 %token<name> ID
-%token VARKEYWORD STKEYWORD RESTWORD
-%token<name>  REL BIN INT
+%token VARKEYWORD STKEYWORD SCOMMENT
+%token<name> BIN INT
 %token<val> NUMBER
-%token LINEEND
-%token<st> SCOMMENT STR
+%token<comment> SCOMMENTS
+%token<obj_relations> O_REL
+%token<relations> REL
 
-%type<longname> relation
 
+%type<relations> rs r
 %%
 
 
-command:    expression '\n' command
-        |
-        ;
+file:    vs cs o
+    ;
 
-expression: vardec constdec restdec
-        |   comment
-        |
-        ;
+vs:     vardec comment vs
+    |
+    |   comment vs;
+cs:     constdec comment cs
+    |
+    |   comment cs;
 
-vardec:     VARKEYWORD ID relation  LINEEND vardec 
+vardec:  VARKEYWORD ID rs  ';' 
            {
-
                 variables.insert(std::pair<std::string, std::string>($2,$2));
 
                 toTeX << "\\item [$" << $2  << " "<< $3 << "$]\n";
            }
-        | 
         ;
+rs:     r rs    {$$=$1}
+    |   r rss
+    |
+    ;
 
-constdec:   STKEYWORD ID  constdec {constraints.insert(std::pair<std::string, std::string>($2,$2)); toTeX << $2 << "\n";}
+r:      BIN | INT | rel;
+rss:    ',' r rss
+    |
+    ;
+rel: REL NUMBER;
+
+constdec:STKEYWORD ID ':' cb ';' {constraints.insert(std::pair<std::string, std::string>($2,$2)); toTeX << $2 << "\n";}
         |
         ;
-
-restdec:    RESTWORD ID
+cb:      l REL l ;
+l:      ID | NUMBER| ;   
+o:      O_REL ID
         |
         ;
-
-relation:   REL NUMBER 
-            {
-                std::string relOperator = $1;
-                if(relOperator== "=")
-                {
-                  std::string returner = "=" + std::to_string($2);
-                  strcpy($$, returner.c_str());
-                }
-                else if(relOperator == "<=")
-                {
-                   
-                   std::string returner = "\\in ["+std::to_string($2)+",-\\infty[";
-                   strcpy($$, returner.c_str());
-                }
-                else if(relOperator == ">=")
-                {
-                   
-                   std::string returner = "\\in ["+std::to_string($2)+",\\infty[";
-                   strcpy($$, returner.c_str());
-                }
-            }
-
-        |   BIN        
-            {
-                std::string returner = "\\in \\{0,1\\}";
-                strcpy($$, returner.c_str());
-            }
-
-        |   INT        
-            {
-                std::string returner = "\\in \\mathbb{Z}";
-                strcpy($$, returner.c_str());
-            }
-        |
-        ;
-comment:    SCOMMENT  ID    {std::cout << "SCOMMENT " << $2 <<'\n'; toTeX << $2 << '\n';}
-        |   SCOMMENT        {std::cout << "SCOMMENT \n";}
+comment: SCOMMENT  SCOMMENTS '\n'   {std::cout << "SCOMMENT " << $2 <<'\n'; toTeX << $2 << '\n';}
         ;
 %%
 
@@ -127,7 +102,7 @@ int main()
 
     toTeX.close();
 
-    std::ofstream vars,consts;
+    /*std::ofstream vars,consts;
     vars.open("var.json");
     consts.open("constr.json");
 
@@ -151,7 +126,7 @@ int main()
 
     vars.close();
     consts.close();
-
+    */
     //fclose(inputfile);
     return 0;
 }
