@@ -5,7 +5,7 @@ class Variable
 private:
 
     const std::string ID;
-    const std::string inTex;
+    std::string inTex;
     const std::string relation;
     int relnum;
     const std::string comment;
@@ -36,7 +36,7 @@ public:
         return relation;
     }
 
-    const std::string& getTex() const
+    const std::string& getInTex() const
     {
         return inTex;
     }
@@ -50,7 +50,6 @@ public:
     {
         if(isWithNumber)
         {
-            std::cout << getID() << std::endl << std::endl;
             return getRelation() + std::to_string(getRelnum());
         }
             
@@ -60,6 +59,11 @@ public:
     const int getRelnum() const
     {
         return relnum;
+    }
+
+    void setInTex(const std::string& it)
+    {
+        inTex = it;
     }
 
 

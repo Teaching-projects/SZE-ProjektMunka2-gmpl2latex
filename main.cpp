@@ -30,14 +30,14 @@ int main()
     yyin = inputfile;
     yyparse();
 
-    
+
     std::ofstream vars,consts;
     vars.open("var.json");
     
     vars << "{\n";
     for(auto& v : variables)
     {
-        vars << "\t\"" << v.getID() << "\" : \"" << v.getTex() << "\"";
+        vars << "\t\"" << v.getID() << "\" : \"" << v.getInTex() << "\"";
         if(&v != &variables.back()) vars << ",";
         vars << "\n";
 
