@@ -3,9 +3,12 @@
     #include <string>
     #include <fstream>
     #include <map>
+    #include <list>
 
     #include <cstdlib>
     #include <string.h>
+
+    #include "Variable.hpp"
 
     int yylex();
     int yyerror(char* message)
@@ -14,7 +17,7 @@
     }
     extern FILE *yyin;
 
-    std::map<std::string, std::string> variables;
+    std::list<Variable> variables;
     std::map<std::string, std::string> constraints;
     std::ofstream toTeX;
 %}
@@ -28,6 +31,12 @@
     char comment[1024];
     enum relations {LessOrEqual,Equal,GreaterOrEqual};
     enum obj_relations {minimize,maximize};
+
+    struct relstruct 
+    {
+        char relop[2];
+        int num;
+    } relstr;
 }
 
 
@@ -44,6 +53,7 @@
 %token<name> MAXI
 
 %type<comment> comment
+%type<relstr> relation
 
 //%type<name> rel
 
@@ -52,24 +62,41 @@
 file: vardecs  constdecs obj {std::cout << "FILE";}
     ;
 
-vardecs: vardecs vardec comment  {std::cout << "vardecs";}
+vardecs: vardecs vardec  {std::cout << "vardecs";}
     |
     ;
 
-vardec: VARKEYWORD ID relation ';' {std::cout << "vardec";}
+vardec: VARKEYWORD ID relation ';' comment
+                    {
+                        std::cout << "vardec"; 
+                        std::cout << "\n relation: " << $3.relop << "\n";
+
+                        if ($3.relop[0] != 'B' && $3.relop[0] != 'I')
+                        {
+                            Variable newVar($2, $3.relop, $3.num, $5);
+                            variables.push_back(newVar);
+                        }
+                        else
+                        {
+                            Variable newVar($2, $3.relop, $5);
+                            variables.push_back(newVar);
+                        }
+                        
+
+                    }
     ;
 
-relation:    REL NUMBER {std::cout << "rel";}
-    |        BIN        {std::cout << "BIN";}
-    |        INT        {std::cout << "INT";}
+relation:    REL NUMBER {std::cout << "rel"; strcpy($<relstr.relop>$, $1); $<relstr.num>$ = $2;}
+    |        BIN        {std::cout << "BIN"; strcpy($<relstr.relop>$, "BI");}
+    |        INT        {std::cout << "INT"; strcpy($<relstr.relop>$, "IN");}
     ;
 
 
-constdecs: constdecs comment constdec    {std::cout << "constdecS";}
+constdecs: constdecs constdec    {std::cout << "constdecS";}
     |
     ;
 
-constdec:  STKEYWORD ID ':'  equation  {std::cout << "constdec";}
+constdec: comment STKEYWORD ID ':'  equation  {std::cout << "constdec";}
     ;
 
 equation:   linear REL linear ';' {std::cout << "EQU";}
