@@ -12,14 +12,12 @@ extern FILE *yyout;
 extern int yyparse(void);
 extern std::list<Variable> variables;
 extern std::map<std::string, std::string> constraints;
-extern std::ofstream toTeX;
+std::ofstream toTeX;
 
 int main()
 {
 
-    std::cout << "User input\n";
-
-    toTeX.open("output.txt");
+//    toTeX.open("output.txt");
 
     FILE *inputfile = fopen("input.txt", "r");
     if (!inputfile)
@@ -30,16 +28,23 @@ int main()
 
 
     yyin = inputfile;
-
     yyparse();
 
     
-    for(auto v : variables)
+    std::ofstream vars,consts;
+    vars.open("var.json");
+    
+    vars << "{\n";
+    for(auto& v : variables)
     {
-        toTeX << v.getID() << ", " << v.getFUllRel() << ", " << v.getComment() << std::endl;
-    }
+        vars << "\t\"" << v.getID() << "\" : \"" << v.getTex() << "\"";
+        if(&v != &variables.back()) vars << ",";
+        vars << "\n";
 
-    toTeX.close();
+    }
+    vars << "}";
+
+ //   toTeX.close();
 
     /*std::ofstream vars,consts;
     vars.open("var.json");

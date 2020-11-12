@@ -19,7 +19,6 @@
 
     std::list<Variable> variables;
     std::map<std::string, std::string> constraints;
-    std::ofstream toTeX;
 %}
 
 %union

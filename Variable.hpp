@@ -1,11 +1,11 @@
 #include <string>
-#include <iostream>
 
 class Variable
 {
 private:
 
     const std::string ID;
+    const std::string inTex;
     const std::string relation;
     int relnum;
     const std::string comment;
@@ -15,12 +15,13 @@ private:
 public:
 
     Variable(const std::string id, const std::string rel, int nm, std::string com) 
-            : ID(id), relation(rel), relnum(nm), comment(com), isWithNumber(true)
+            : ID(id), inTex(ID), relation(rel), relnum(nm), comment(com), isWithNumber(true)
     {
 
     }
 
-    Variable(const std::string id, const std::string rel, std::string com) : ID(id), relation(rel), comment(com), isWithNumber(false)
+    Variable(const std::string id, const std::string rel, std::string com) 
+            : ID(id), inTex(ID), relation(rel), comment(com), isWithNumber(false)
     {
 
     }
@@ -33,6 +34,11 @@ public:
     const std::string& getRelation() const
     {
         return relation;
+    }
+
+    const std::string& getTex() const
+    {
+        return inTex;
     }
 
     const std::string& getComment() const
@@ -55,6 +61,8 @@ public:
     {
         return relnum;
     }
+
+
 
 
 };
