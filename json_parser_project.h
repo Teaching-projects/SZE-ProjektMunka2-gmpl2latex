@@ -10,8 +10,8 @@
 #include "document.h"
 #include "filewritestream.h"
 #include "prettywriter.h"
-
-typedef std::vector<std::string> STLCONTAINER;
+#include "Variable.hpp"
+typedef std::vector<Variable*> STLCONTAINER;
 
 void objectParser(rapidjson::Value::ConstObject o, std::map<std::string, std::string>&eredmenyMap) {
 
@@ -54,74 +54,77 @@ std::map<std::string, std::string>jsonToMap(const char* fname, const char*mod)
 	return eredmenyMap;
 
 }
-Value objectCreator(STLCONTAINER next, Document&output) {
-	Value ret(kObjectType);
-	Value name(kStringType);
-	Value val(kObjectType);
-	Document::AllocatorType& allocator = output.GetAllocator();
+rapidjson::Value objectCreator(STLCONTAINER next, rapidjson::Document&output) {
+	rapidjson::Value ret(rapidjson::kObjectType);
+	rapidjson::Value name(rapidjson::kStringType);
+	rapidjson::Value val(rapidjson::kObjectType);
+	rapidjson::Document::AllocatorType& allocator = output.GetAllocator();
 	for (STLCONTAINER::iterator it = next.begin(); it != next.end(); ++it) {
-		std::string tmp = *it;
-		val.SetString((*it).c_str(), static_cast<SizeType>((*it).length()), allocator);
-		name.SetString(tmp.c_str(), allocator);
+		Variable tmp = *(*it);
+		val.SetString((*(*it)).getInTex().c_str(), static_cast<rapidjson::SizeType>((*(*it)).getInTex().length()), allocator);
+		name.SetString(tmp.getID().c_str(), allocator);
 		ret.AddMember(name, val, allocator);
 	}
 	return ret;
 }
-Value setOfSetsCreator(STLCONTAINER next, Document&output) {
-	Value ret(kObjectType);
-	Value name(kStringType);
-	Value val(kObjectType);
-	Document::AllocatorType& allocator = output.GetAllocator();
+/*DEPRECATED*/
+/*rapidjson::Value setOfSetsCreator(STLCONTAINER next, rapidjson::Document&output) {
+	rapidjson::Value ret(rapidjson::kObjectType);
+	rapidjson::Value name(rapidjson::kStringType);
+	rapidjson::Value val(rapidjson::kObjectType);
+	rapidjson::Document::AllocatorType& allocator = output.GetAllocator();
 	for (STLCONTAINER::iterator it = next.begin(); it != next.end(); ++it) {
-		Value tmpSet(kObjectType);
+		rapidjson::Value tmpSet(rapidjson::kObjectType);
 		std::string tmp = *it;
 		std::string tmpVal = tmp;
 		std::string tmpName = tmp + "_name";
 		tmpVal = toupper(tmp[0]);
-		val.SetString(tmpVal.c_str(), static_cast<SizeType>(tmpVal.length()), allocator);
+		val.SetString(tmpVal.c_str(), static_cast<rapidjson::SizeType>(tmpVal.length()), allocator);
 		name.SetString(tmpName.c_str(), allocator);
 		tmpSet.AddMember(name, val, allocator);
 		tmpName = tmp + "_default-index";
 		tmpVal = tolower(tmp[0]);
-		val.SetString(tmpVal.c_str(), static_cast<SizeType>(tmpVal.length()), allocator);
+		val.SetString(tmpVal.c_str(), static_cast<rapidjson::SizeType>(tmpVal.length()), allocator);
 		name.SetString(tmpName.c_str(), allocator);
 		tmpSet.AddMember(name, val, allocator);
-		ret.AddMember(Value(tmp.c_str(), static_cast<SizeType>(tmp.length()), allocator), tmpSet, allocator);
+		ret.AddMember(rapidjson::Value(tmp.c_str(), static_cast<rapidjson::SizeType>(tmp.length()), allocator), tmpSet, allocator);
 	}
 	return ret;
-}
+}*/
+/*END DEPRECATED*/
 
-Document createJson(int componentsCount...) {
+rapidjson::Document createJson(int componentsCount...) {
 
 	STLCONTAINER tmpVector;
-	Document output;
+	rapidjson::Document output;
 	output.SetObject();
 	va_list components;
 	va_start(components, componentsCount);
 	if (componentsCount == 1) {
 		tmpVector = va_arg(components, STLCONTAINER);
-		output.AddMember("Variables", ObjectCreator(tmpVector, output), output.GetAllocator());
+		output.AddMember("Variables", objectCreator(tmpVector, output), output.GetAllocator());
 	}
 	else
 	{
-		for (int i = 0; i < componentsCount; i++)
+		/*for (int i = 0; i < componentsCount; i++)
 		{
 			tmpVector = va_arg(components, STLCONTAINER);
 			if (i == 0) { output.AddMember("Sets", setOfSetsCreator(tmpVector, output), output.GetAllocator()); }
 			else if (i == 1) { output.AddMember("Parameters", objectCreator(tmpVector, output), output.GetAllocator()); }
 			else if (i == 2) { output.AddMember("Variables", objectCreator(tmpVector, output), output.GetAllocator()); }
-		}
+		}*/
+		std::cerr << "The program doesn't support a complex example at the moment" << std::endl;
 	}
 	va_end(components);
 	return output;
 }
-void writeToFile(const char*fname,const char*mod, Document&output) {
+void writeToFile(const char*fname, const char*mod, rapidjson::Document&output) {
 	FILE* fileCreator = fopen(fname, "ab+");
 	fclose(fileCreator);
 	FILE* fp = fopen(fname, mod); // non-Windows use "w"
 	char writeBuffer[65536];
-	FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
-	PrettyWriter<FileWriteStream> pwriter(os);
+	rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+	rapidjson::PrettyWriter<rapidjson::FileWriteStream> pwriter(os);
 	output.Accept(pwriter);
 	fclose(fp);
 }
