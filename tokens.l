@@ -18,7 +18,7 @@ ALPHABET    [a-zA-Z]
 "#!"({ALPHABET}|{DIGITS}|" ")*               {strcpy(yylval.comment, yytext);return SCOMMENTS;}
 ";"                                          return ';';
 ":"                                          return ':';
-("+"|"-"|"*"|"/")                            {strcpy(yylval.operation, yytext); return OPERATOR;}
+("+"|"-"|"*"|"/")                            {yylval.operation = yytext[0]; return OPERATOR;}
 ("<="|"="|">=")                              {strcpy(yylval.rels, yytext); return REL;}
 "minimize"                                   {strcpy(yylval.name, yytext); return MINI;}
 "maximize"                                   {strcpy(yylval.name, yytext); return MAXI;}

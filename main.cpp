@@ -5,13 +5,17 @@
 #include <string>
 #include <list>
 #include "grammar.tab.h"
+
 #include "Variable.hpp"
+#include "Constraint.hpp"
+#include "Objective.hpp"
 
 extern FILE *yyin;
 extern FILE *yyout;
 extern int yyparse(void);
 extern std::list<Variable> variables;
-extern std::map<std::string, std::string> constraints;
+extern std::list<Constraint> constraints;
+extern Objective object;
 std::ofstream toTeX;
 
 int main()
@@ -29,6 +33,9 @@ int main()
 
     yyin = inputfile;
     yyparse();
+
+    for (auto& k : constraints)
+    std::cout << "\n\n\n" << k.toString() << "\n\n\n";
 
 
     std::ofstream vars,consts;

@@ -4,11 +4,14 @@
     #include <fstream>
     #include <map>
     #include <list>
+    #include <variant>
 
     #include <cstdlib>
     #include <string.h>
 
     #include "Variable.hpp"
+    #include "Constraint.hpp"
+    #include "Objective.hpp"
 
     int yylex();
     int yyerror(char* message)
@@ -18,18 +21,25 @@
     extern FILE *yyin;
 
     std::list<Variable> variables;
-    std::map<std::string, std::string> constraints;
+    std::list<Constraint> constraints;
+
+    std::list<std::variant<Variable*, char, int>> EqSide;
+    std::variant<Variable*, char, int> pusher;
+    std::list<std::variant<Variable*, char, int>> RHS;
+    std::list<std::variant<Variable*, char, int>> LHS;
+    std::list<std::variant<Variable*, char, int>> OBJ;
+    Objective object;
 %}
 
 %union
 {
-    char operation[2];
+    char operation;
     char rels[2];
     char name[16];
     int  val;
     char comment[1024];
     enum relations {LessOrEqual,Equal,GreaterOrEqual};
-    enum obj_relations {minimize,maximize};
+    char obj_relations[8];
 
     struct relstruct 
     {
@@ -53,6 +63,8 @@
 
 %type<comment> comment
 %type<relstr> relation
+%type<rels> equation
+%type<obj_relations> objtype
 
 //%type<name> rel
 
@@ -95,23 +107,71 @@ constdecs: constdecs constdec    {std::cout << "constdecS";}
     |
     ;
 
-constdec: comment STKEYWORD ID ':'  equation  {std::cout << "constdec";}
+constdec: comment STKEYWORD ID ':'  equation   {
+                                                    std::cout << "constdec";
+                                                    std::string re = $5;
+                                                    std::string com = $1;
+                                                    LHS.reverse();
+                                                    RHS.reverse();
+                                                    Constraint cons(LHS, RHS, re, com);
+                                                    constraints.push_back(cons);
+
+                                               }
     ;
 
-equation:   linear REL linear ';' {std::cout << "EQU";}
-    |       
-    ;
-linear:     ID OPERATOR linear
-    |       ID                      {std::cout << "ID";}
-    |       NUMBER OPERATOR linear
-    |       NUMBER                  {std::cout << "NUMBER";}
+equation:   lhs REL rhs ';' {std::cout << "EQU"; strcpy($$, $2);}
     ;
 
-obj:    comment objtype ID ':'  linear ';' {std::cout << "OBJECTIVE";}
+lhs:    linear {std::cout << "LEFTSIDE\n"; LHS = EqSide; EqSide.clear();};
+rhs:    linear {std::cout << "RIGHT\n"; RHS = EqSide; EqSide.clear();};
+
+linear:     ID OPERATOR linear      {
+                                        for (auto it : variables)
+                                        {
+                                            std::string id = $1;
+                                            if( it.getID() == id)
+                                            {
+                                                pusher = &it;
+                                                EqSide.push_back(pusher);
+                                                break;
+                                            }
+                                        }
+                                        pusher = $2;
+                                        EqSide.push_back(pusher);
+                                    }
+
+    |       ID                      {
+                                        std::cout << "ID";
+                                        for (auto it : variables)
+                                        {
+                                            std::string id = $1;
+                                            if( it.getID() == id)
+                                            {
+                                                pusher = &it;
+                                                EqSide.push_back(pusher);
+                                                break;
+                                            }
+                                        }
+                                    }
+    |       NUMBER OPERATOR linear  {pusher = $2; EqSide.push_back(pusher); pusher = $1; EqSide.push_back(pusher);}
+    |       NUMBER                  {std::cout << "NUMBER"; pusher = $1; EqSide.push_back(pusher);}
     ;
 
-objtype: MINI
-    |    MAXI
+obj:    comment objtype ID ':'  objlinear ';' {
+                                                std::cout << "OBJECTIVE";
+                                                
+                                                std::string comment = $1;
+                                                std::string otype = $2;
+
+                                                object = Objective(OBJ, otype, comment);
+
+                                              }
+    ;
+
+objlinear: linear       {OBJ = EqSide; EqSide.clear();};
+
+objtype: MINI   {strcpy($$, $1);}
+    |    MAXI   {strcpy($$, $1);}
     ;
 
 comment: SCOMMENTS {std::cout << "COMMENT"; strncpy($$,$1+2, sizeof($1)); std::cout << $$;}
