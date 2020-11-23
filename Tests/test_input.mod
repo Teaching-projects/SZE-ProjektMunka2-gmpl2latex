@@ -1,6 +1,6 @@
-var KF >= 0; #!< The amount of Kisfroccs we sell
-var NF >= 0; #!< The amount of Nagyfroccs we sell
-var HL >= 0; #!< The amount of Hosszulepes we sell
+var KF >= 0; #! The amount of Kisfroccs we sell
+var NF >= 0; #! The amount of Nagyfroccs we sell
+var HL >= 0; #! The amount of Hosszulepes we sell
 
 
 #! This equation enforces that we don't use more than 100 l of wine.
