@@ -18,15 +18,15 @@ extern std::list<Constraint> constraints;
 extern Objective object;
 std::ofstream toTeX;
 
-int main()
+int main(int argc, char **argv)
 {
 
 //    toTeX.open("output.txt");
 
-    FILE *inputfile = fopen("input.txt", "r");
+    FILE *inputfile = fopen(argv[1], "r");
     if (!inputfile)
     {
-        std::cout << "I can't open file!\n";
+        std::cerr << "Can't open file!\n";
         return -1;
     }
 
