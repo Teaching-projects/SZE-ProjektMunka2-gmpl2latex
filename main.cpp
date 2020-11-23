@@ -36,10 +36,11 @@ int main(int argc, char **argv)
 
     for (auto& k : constraints)
     std::cout << "\n\n\n" << k.toString() << "\n\n\n";
-
-
+    
     std::ofstream vars,consts;
     vars.open("var.json");
+
+    
     
     vars << "{\n";
     for(auto& v : variables)
