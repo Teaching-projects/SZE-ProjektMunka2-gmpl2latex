@@ -17,5 +17,5 @@ jobs:
         run: cd ./Tests && ./testing.sh test_input.mod
         id: run_test
         if: ${{ steps.make.conclusion == 'success' }}
-      - run: diff ../Tests/exp_json_out.json ../var.json
+      - run: diff Tests/exp_json_out.json ./var.json
         if: ${{ steps.run_test.conclusion == 'success' }}
