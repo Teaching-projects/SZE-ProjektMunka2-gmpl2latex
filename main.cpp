@@ -76,7 +76,13 @@ int main(int argc, char **argv)
             VariableNames=jsonToMap(jsonInp.c_str(),usageMode.c_str());
 
             // change toTex values in variables to ones read from json
-
+            std::string changeto;
+            for(auto v: variables){
+                std::cout << "\n" << v.getInTex() << "\n";
+                changeto=VariableNames[v.getID()];
+                v.setInTex(changeto);
+                std::cout << "\n" << v.getInTex() << "\n";
+            }
             // write to tex file
         }
     }else{
