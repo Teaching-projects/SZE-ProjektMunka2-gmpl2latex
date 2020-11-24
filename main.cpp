@@ -51,7 +51,7 @@ int main(int argc, char **argv)
                 return -1;
             }
         }else{
-            std::string jsonInp = ""; 
+            std::string jsonInp = "var.json"; 
             std::string texout = ""; 
             std::string rj = "--readjson";
             std::string ot = "--outputtex";
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
                 jsonInp ==argv[3];
             }
             if(argv[4] == ot){
-                jsonInp ==argv[5];
+                texout ==argv[5];
             }
             FILE *inputfile = fopen(argv[1], "r");
             if (!inputfile)
@@ -73,15 +73,13 @@ int main(int argc, char **argv)
 
             std::map<std::string,std::string> VariableNames;
             std::string usageMode = "r";
-            VariableNames=jsonToMap(jsonInp.c_str(),usageMode.c_str());
+            VariableNames=jsonToMap(jsonInp.c_str(),"r");
 
             // change toTex values in variables to ones read from json
             std::string changeto;
             for(auto v: variables){
-                std::cout << "\n" << v.getInTex() << "\n";
                 changeto=VariableNames[v.getID()];
                 v.setInTex(changeto);
-                std::cout << "\n" << v.getInTex() << "\n";
             }
             // write to tex file
         }
