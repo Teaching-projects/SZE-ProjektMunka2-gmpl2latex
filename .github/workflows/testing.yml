@@ -1,0 +1,23 @@
+name: Testing
+
+on:
+  push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get_rapidjson
+        run: sudo apt-get install rapidjson-dev
+      - name: update gcc
+        run: sudo apt --only-upgrade install g++-10 gcc-10 
+      - name: make
+        id: make
+        run: make
+      - name: run testing.sh with test_input.mod
+        run: cd ./Tests && ./testing.sh test_input.mod
+        id: run_test
+        if: ${{ steps.make.conclusion == 'success' }}
+      - run: diff Tests/exp_json_out.json var.json
+        if: ${{ steps.run_test.conclusion == 'success' }}
