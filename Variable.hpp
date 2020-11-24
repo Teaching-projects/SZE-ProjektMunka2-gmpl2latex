@@ -28,7 +28,7 @@ public:
 	  Variable(const Variable& other):ID(other.getID()), inTex(other.getInTex()), relation(other.getRelation()), 
 			  relnum(other.getRelnum()), comment(other.getComment()), isWithNumber(other.isWithNumber) {}
 
-	  Variable&operator=(const Variable&other) {
+	  /*Variable&operator=(const Variable&other) {
 		  this->comment = other.comment;
 		  this->ID = other.ID;
 		  this->inTex = other.inTex;
@@ -36,7 +36,7 @@ public:
 		  this->relation = other.relation;
 		  this->relnum = other.relnum;
 		  return *this;
-	  }
+	  }*/
 
     const std::string& getID() const
     {

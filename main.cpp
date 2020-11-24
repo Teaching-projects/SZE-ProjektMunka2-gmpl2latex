@@ -24,55 +24,64 @@ std::ofstream toTeX;
 
 int main(int argc, char **argv)
 {
+    std::string inF, outF;
+    if(argc == 4 || argc==5){
+        if(argc == 3){
+            if(argv[2] == "--createjson"){
+                FILE *inputfile = fopen(argv[1], "r");
+                if (!inputfile)
+                {
+                    std::cerr << "Can't open file!\n";
+                    return -1;
+                }
 
-    FILE *inputfile = fopen(argv[1], "r");
-    if (!inputfile)
-    {
-        std::cerr << "Can't open file!\n";
+                yyin = inputfile;
+                yyparse();
+
+                if(!ParseSuccessfull)
+                { 
+                    std::cerr << "Parsing error!";
+                    return 1;
+                }
+
+                rapidjson::Document output;
+                output=createJson(1,variables);  
+                writeToFile(argv[3],"w",output);
+            }else{
+                std::cerr << "Invalid type of arguments\n";
+                return -1;
+            }
+        }else{
+            std::string jsonInp = ""; 
+            std::string texout = ""; 
+            if(argv[2] == "--readjson"){
+                jsonInp ==argv[3];
+            }
+            if(argv[4] == "--readjson"){
+                jsonInp ==argv[5];
+            }
+            FILE *inputfile = fopen(argv[1], "r");
+            if (!inputfile)
+            {
+                std::cerr << "Can't open file!\n";
+                return -1;
+            }
+
+            yyin = inputfile;
+            yyparse();
+
+            std::map<std::string,std::string> VariableNames;
+            std::string usageMode = "r";
+            VariableNames=jsonToMap(jsonInp.c_str(),usageMode.c_str());
+
+            // change toTex values in variables to ones read from json
+
+            // write to tex file
+        }
+    }else{
+        std::cerr << "Invalid number of arguments\n";
         return -1;
     }
-
-    yyin = inputfile;
-    yyparse();
-
-    if(!ParseSuccessfull)
-    { 
-        std::cerr << "Parsing error!";
-        return 1;
-    }
-
-    rapidjson::Document output;
-    output=createJson(1,variables);  
-    writeToFile("var.json","w",output);
-
-    /*
-    for (auto& v : variables)
-    {
-        std::cout << "\n" << v.getID() << v.getRelation() << v.getComment() << "\n";
-    }
-
-    for (auto& k : constraints)
-    {
-        std::cout << "\n\n\n" << k.getComment() << "\n" << k.toString() << "\n\n\n";
-
-    }
-
-    std::cout << object.getComment() << "\n" << object.toString(); 
-    
-    std::ofstream vars,consts;
-    vars.open("var.json");
-    vars << "{\n";
-    for(auto& v : variables)
-    {
-        vars << "\t\"" << v.getID() << "\" : \"" << v.getInTex() << "\"";
-        if(&v != &variables.back()) vars << ",";
-        vars << "\n";
-
-    }
-    vars << "}";
-
-    fclose(inputfile);
-    */
 
     return 0;
 }
