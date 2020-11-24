@@ -10,6 +10,8 @@
 #include "Constraint.hpp"
 #include "Objective.hpp"
 
+#include "json_parser_project.h"
+
 extern FILE *yyin;
 extern FILE *yyout;
 extern int yyparse(void);
@@ -20,8 +22,6 @@ std::ofstream toTeX;
 
 int main(int argc, char **argv)
 {
-
-//    toTeX.open("output.txt");
 
     FILE *inputfile = fopen(argv[1], "r");
     if (!inputfile)
@@ -34,14 +34,19 @@ int main(int argc, char **argv)
     yyin = inputfile;
     yyparse();
 
+    /*
     for (auto& k : constraints)
     std::cout << "\n\n\n" << k.toString() << "\n\n\n";
+    */
     
+    rapidjson::Document output;
+    output=createJson(1,variables);
+  std::cout << "\neddig ok1\n";  
+    writeToFile("var.json","w",output);
+std::cout << "\neddig ok\n";
+    /*
     std::ofstream vars,consts;
     vars.open("var.json");
-
-    
-    
     vars << "{\n";
     for(auto& v : variables)
     {
@@ -52,33 +57,8 @@ int main(int argc, char **argv)
     }
     vars << "}";
 
- //   toTeX.close();
-
-    /*std::ofstream vars,consts;
-    vars.open("var.json");
-    consts.open("constr.json");
-
-    std::cout << "\n\nList of variables:\n";
-    vars << "{\n";
-    consts << "{\n";
-    for(auto v: variables)
-    {
-        std::cout << "gmpl: "<< v.first  << " LaTex: " << v.second  << '\n';
-        vars << "\t\"" << v.first << "\" : \"" << v.second <<"\"\n";
-
-    }
-    std::cout << "\nList of constraints:\n";
-    for(auto v: constraints)
-    {
-        std::cout << "gmpl: " << v.first << " LaTex: " << v.second << '\n';
-        consts << "\t\"" << v.first << "\" : \"" << v.second << "\"\n";
-    }
-    vars << "}\n";
-    consts << "}\n";
-
-    vars.close();
-    consts.close();*/
-
     fclose(inputfile);
+    */
+
     return 0;
 }

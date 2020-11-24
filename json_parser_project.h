@@ -59,9 +59,12 @@ rapidjson::Value objectCreator(STLCONTAINER next, rapidjson::Document&output) {
 	rapidjson::Value name(rapidjson::kStringType);
 	rapidjson::Value val(rapidjson::kObjectType);
 	rapidjson::Document::AllocatorType& allocator = output.GetAllocator();
-	for (STLCONTAINER::iterator it = next.begin(); it != next.end(); ++it) {
-		Variable tmp = *(*it);
-		val.SetString((*(*it)).getInTex().c_str(), static_cast<rapidjson::SizeType>((*(*it)).getInTex().length()), allocator);
+	for (auto it: next) {
+		std::cout << "\neddig ok111\n";
+		Variable tmp = *it;
+		std::cout << "\neddig okkkkparser\n";
+		val.SetString((*it).getInTex().c_str(), static_cast<rapidjson::SizeType>((*it).getInTex().length()), allocator);
+		std::cout << "\neddig okkkkpar\n";
 		name.SetString(tmp.getID().c_str(), allocator);
 		ret.AddMember(name, val, allocator);
 	}
@@ -103,6 +106,7 @@ rapidjson::Document createJson(int componentsCount...) {
 	if (componentsCount == 1) {
 		tmpVector = va_arg(components, STLCONTAINER);
 		output.AddMember("Variables", objectCreator(tmpVector, output), output.GetAllocator());
+		std::cout << "\neddig okkkk\n";
 	}
 	else
 	{
