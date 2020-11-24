@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FILE=../Tests/std_output.txt
+FILE=./Tests/std_output.txt
 INPF=test_input.mod
 
 
