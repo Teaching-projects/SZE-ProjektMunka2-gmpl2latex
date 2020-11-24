@@ -1,0 +1,4 @@
+relCOMMENTvardec
+ relation: >=
+vardecs<
+eddig ok
