@@ -16,7 +16,7 @@ jobs:
         id: make
         run: make
       - name: run testing.sh with test_input.mod
-        run: cd ./Tests && ./testing.sh test_input.mod
+        run: ./Tests/testing.sh test_input.mod
         id: run_test
         if: ${{ steps.make.conclusion == 'success' }}
       - run: diff Tests/exp_json_out.json var.json
