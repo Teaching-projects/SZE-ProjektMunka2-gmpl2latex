@@ -101,7 +101,6 @@ rapidjson::Document createJson(int componentsCount, const STLCONTAINER& tmpVecto
 	output.SetObject();
 	va_list components;
 	if (componentsCount == 1) {
-		std::cout << "\neddig okkkk\n";
 		output.AddMember("Variables", objectCreator(tmpVector, output), output.GetAllocator());
 	}
 	else

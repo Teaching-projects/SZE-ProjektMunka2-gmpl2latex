@@ -9,4 +9,4 @@ then
 	rm $FILE
 fi
 
-../a.out $INPF >> $FILE
+../a.out $INPF --createjson var.json >> $FILE

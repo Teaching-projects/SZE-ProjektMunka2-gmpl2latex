@@ -25,19 +25,18 @@ std::ofstream toTeX;
 int main(int argc, char **argv)
 {
     std::string inF, outF;
-    if(argc == 4 || argc==5){
-        if(argc == 3){
-            if(argv[2] == "--createjson"){
+    if(argc == 4 || argc==6){
+        if(argc == 4){
+            std::string cj = "--createjson";
+            if(argv[2] == cj){
                 FILE *inputfile = fopen(argv[1], "r");
                 if (!inputfile)
                 {
                     std::cerr << "Can't open file!\n";
                     return -1;
                 }
-
                 yyin = inputfile;
                 yyparse();
-
                 if(!ParseSuccessfull)
                 { 
                     std::cerr << "Parsing error!";
@@ -48,16 +47,18 @@ int main(int argc, char **argv)
                 output=createJson(1,variables);  
                 writeToFile(argv[3],"w",output);
             }else{
-                std::cerr << "Invalid type of arguments\n";
+                std::cerr << argv[2]<<" Invalid type of arguments\n";
                 return -1;
             }
         }else{
             std::string jsonInp = ""; 
             std::string texout = ""; 
-            if(argv[2] == "--readjson"){
+            std::string rj = "--readjson";
+            std::string ot = "--outputtex";
+            if(argv[2] == rj){
                 jsonInp ==argv[3];
             }
-            if(argv[4] == "--readjson"){
+            if(argv[4] == ot){
                 jsonInp ==argv[5];
             }
             FILE *inputfile = fopen(argv[1], "r");
