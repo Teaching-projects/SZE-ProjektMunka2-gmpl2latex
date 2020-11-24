@@ -9,6 +9,7 @@ extern enum relations;
 DIGITS      [0-9]
 ALPHABET    [a-zA-Z]
 
+
 %%
 "exit"                                       return '\0';
 "var"                                        return VARKEYWORD;
