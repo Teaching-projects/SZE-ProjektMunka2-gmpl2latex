@@ -18,6 +18,8 @@ extern int yyparse(void);
 extern std::list<Variable> variables;
 extern std::list<Constraint> constraints;
 extern Objective object;
+extern bool ParseSuccessfull;
+
 std::ofstream toTeX;
 
 int main(int argc, char **argv)
@@ -34,14 +36,19 @@ int main(int argc, char **argv)
     yyin = inputfile;
     yyparse();
 
+    if(!ParseSuccessfull)
+    {
+        return 1;
+    }
+
     /*
     for (auto& k : constraints)
     std::cout << "\n\n\n" << k.toString() << "\n\n\n";
     */
-    
+     std::cout << "\neddig ok1234\n";
     rapidjson::Document output;
     output=createJson(1,variables);
-  std::cout << "\neddig ok1\n";  
+  std::cout << "\neddig ok1234\n";  
     writeToFile("var.json","w",output);
 std::cout << "\neddig ok\n";
     /*

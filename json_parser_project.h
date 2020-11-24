@@ -5,13 +5,14 @@
 #include <string>
 #include <fstream>
 #include <stdarg.h>
+#include <list>
 /*Rapidjson includes*/
 #include "filereadstream.h"
 #include "document.h"
 #include "filewritestream.h"
 #include "prettywriter.h"
 #include "Variable.hpp"
-typedef std::vector<Variable*> STLCONTAINER;
+typedef std::list<Variable> STLCONTAINER;
 
 void objectParser(rapidjson::Value::ConstObject o, std::map<std::string, std::string>&eredmenyMap) {
 
@@ -54,16 +55,16 @@ std::map<std::string, std::string>jsonToMap(const char* fname, const char*mod)
 	return eredmenyMap;
 
 }
-rapidjson::Value objectCreator(STLCONTAINER next, rapidjson::Document&output) {
+rapidjson::Value objectCreator(const STLCONTAINER& next, rapidjson::Document&output) {
 	rapidjson::Value ret(rapidjson::kObjectType);
 	rapidjson::Value name(rapidjson::kStringType);
 	rapidjson::Value val(rapidjson::kObjectType);
 	rapidjson::Document::AllocatorType& allocator = output.GetAllocator();
 	for (auto it: next) {
 		std::cout << "\neddig ok111\n";
-		Variable tmp = *it;
+		Variable tmp = it;
 		std::cout << "\neddig okkkkparser\n";
-		val.SetString((*it).getInTex().c_str(), static_cast<rapidjson::SizeType>((*it).getInTex().length()), allocator);
+		val.SetString(it.getInTex().c_str(), static_cast<rapidjson::SizeType>(it.getInTex().length()), allocator);
 		std::cout << "\neddig okkkkpar\n";
 		name.SetString(tmp.getID().c_str(), allocator);
 		ret.AddMember(name, val, allocator);
@@ -96,17 +97,15 @@ rapidjson::Value objectCreator(STLCONTAINER next, rapidjson::Document&output) {
 }*/
 /*END DEPRECATED*/
 
-rapidjson::Document createJson(int componentsCount...) {
+rapidjson::Document createJson(int componentsCount, const STLCONTAINER& tmpVector) {
 
-	STLCONTAINER tmpVector;
+	//STLCONTAINER tmpVector;
 	rapidjson::Document output;
 	output.SetObject();
 	va_list components;
-	va_start(components, componentsCount);
 	if (componentsCount == 1) {
-		tmpVector = va_arg(components, STLCONTAINER);
-		output.AddMember("Variables", objectCreator(tmpVector, output), output.GetAllocator());
 		std::cout << "\neddig okkkk\n";
+		output.AddMember("Variables", objectCreator(tmpVector, output), output.GetAllocator());
 	}
 	else
 	{

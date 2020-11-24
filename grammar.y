@@ -29,6 +29,7 @@
     std::list<std::variant<Variable*, char, int>> LHS;
     std::list<std::variant<Variable*, char, int>> OBJ;
     Objective object;
+    bool ParseSuccessfull = false;
 %}
 
 %union
@@ -70,7 +71,7 @@
 
 %%
 
-file: vardecs  constdecs obj {std::cout << "FILE";}
+file: vardecs  constdecs obj {std::cout << "FILE"; ParseSuccessfull = true;}
     ;
 
 vardecs: vardecs vardec  {std::cout << "vardecs";}
