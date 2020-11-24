@@ -1,7 +1,7 @@
 #!/bin/bash
 
 FILE=./Tests/std_output.txt
-INPF=test_input.mod
+INPF=./Tests/test_input.mod
 
 
 if test -f $FILE
