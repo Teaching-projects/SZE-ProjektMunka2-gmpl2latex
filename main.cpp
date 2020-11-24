@@ -16,6 +16,7 @@ extern int yyparse(void);
 extern std::list<Variable> variables;
 extern std::list<Constraint> constraints;
 extern Objective object;
+extern bool ParseSuccessfull;
 std::ofstream toTeX;
 
 int main()
@@ -34,8 +35,24 @@ int main()
     yyin = inputfile;
     yyparse();
 
+    if(!ParseSuccessfull)
+    {
+        std::cout << "Parsing error!";
+        return 1;
+    }
+
+    for (auto& v : variables)
+    {
+        std::cout << "\n" << v.getID() << v.getRelation() << v.getComment() << "\n";
+    }
+
     for (auto& k : constraints)
-    std::cout << "\n\n\n" << k.toString() << "\n\n\n";
+    {
+        std::cout << "\n\n\n" << k.getComment() << "\n" << k.toString() << "\n\n\n";
+
+    }
+
+    std::cout << object.getComment() << "\n" << object.toString(); 
 
 
     std::ofstream vars,consts;

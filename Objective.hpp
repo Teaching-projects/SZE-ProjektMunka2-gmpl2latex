@@ -8,12 +8,12 @@
 
 class Objective
 {
-    std::list<std::variant<Variable*, char, int>> LHS;
+    std::list<std::variant<Variable*, char, std::string>> LHS;
     std::string relation;
     std::string comment;
 
 public:
-    Objective(std::list<std::variant<Variable*, char, int>>& lh, const std::string& rel, const std::string& com):
+    Objective(std::list<std::variant<Variable*, char, std::string>>& lh, const std::string& rel, const std::string& com):
             LHS(lh), relation(rel), comment(com)
     {
 
@@ -42,5 +42,35 @@ public:
     std::string getRelation() const
     {
         return relation;
+    }
+
+    std::string toString()
+    {
+        std::string returner = "";
+
+        for(auto& it : LHS)
+        {
+            try
+            {
+                Variable* var = std::get<Variable*>(it);
+                returner += var->getID();
+            }
+            catch(const std::bad_variant_access&)
+            {
+                try
+                {
+                    char op = std::get<char>(it);
+                    returner += op;
+                }
+                catch (const std::bad_variant_access&)
+                {
+                    returner += std::get<std::string>(it);
+                }
+            }
+        }
+
+        returner += relation;
+
+        return returner;
     }
 };

@@ -8,14 +8,14 @@ private:
     const std::string ID;
     std::string inTex;
     const std::string relation;
-    int relnum;
+    std::string relnum;
     const std::string comment;
 
     bool isWithNumber;
 
 public:
 
-    Variable(const std::string id, const std::string rel, int nm, std::string com) 
+    Variable(const std::string id, const std::string rel, std::string& nm, std::string com) 
             : ID(id), inTex(ID), relation(rel), relnum(nm), comment(com), isWithNumber(true)
     {
 
@@ -51,13 +51,13 @@ public:
     {
         if(isWithNumber)
         {
-            return getRelation() + std::to_string(getRelnum());
+            return getRelation() + getRelnum();
         }
             
         return getRelation();
     }
 
-    const int getRelnum() const
+    const std::string getRelnum() const
     {
         return relnum;
     }
