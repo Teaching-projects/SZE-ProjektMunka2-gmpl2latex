@@ -5,6 +5,7 @@
     #include <map>
     #include <list>
     #include <variant>
+    #include <string>
 
     #include <cstdlib>
     #include <string.h>
@@ -23,12 +24,13 @@
     std::list<Variable> variables;
     std::list<Constraint> constraints;
 
-    std::list<std::variant<Variable*, char, int>> EqSide;
-    std::variant<Variable*, char, int> pusher;
-    std::list<std::variant<Variable*, char, int>> RHS;
-    std::list<std::variant<Variable*, char, int>> LHS;
-    std::list<std::variant<Variable*, char, int>> OBJ;
+    std::list<std::variant<Variable*, char, std::string>> EqSide;
+    std::variant<Variable*, char, std::string> pusher;
+    std::list<std::variant<Variable*, char, std::string>> RHS;
+    std::list<std::variant<Variable*, char, std::string>> LHS;
+    std::list<std::variant<Variable*, char, std::string>> OBJ;
     Objective object;
+
     bool ParseSuccessfull = false;
 %}
 
@@ -37,7 +39,7 @@
     char operation;
     char rels[2];
     char name[16];
-    int  val;
+    char  val[32];
     char comment[1024];
     enum relations {LessOrEqual,Equal,GreaterOrEqual};
     char obj_relations[8];
@@ -45,7 +47,7 @@
     struct relstruct 
     {
         char relop[2];
-        int num;
+        char num[32];
     } relstr;
 }
 
@@ -57,12 +59,14 @@
 %token<operation> OPERATOR
 
 %token<comment> SCOMMENTS
+%token<comment> VARCOMMENTS
 %token<name> O_REL
 %token<rels> REL
 %token<name> MINI
 %token<name> MAXI
 
 %type<comment> comment
+%type<comment> varcomment
 %type<relstr> relation
 %type<rels> equation
 %type<obj_relations> objtype
@@ -78,14 +82,13 @@ vardecs: vardecs vardec  {std::cout << "vardecs";}
     |
     ;
 
-vardec: VARKEYWORD ID relation ';' comment
+vardec: VARKEYWORD ID relation ';' varcomment
                     {
-                        std::cout << "vardec"; 
-                        std::cout << "\n relation: " << $3.relop << "\n";
 
                         if ($3.relop[0] != 'B' && $3.relop[0] != 'I')
                         {
-                            Variable newVar($2, $3.relop, $3.num, $5);
+                            std::string a = $3.num;
+                            Variable newVar($2, $3.relop, a, $5);
                             variables.push_back(newVar);
                         }
                         else
@@ -98,7 +101,7 @@ vardec: VARKEYWORD ID relation ';' comment
                     }
     ;
 
-relation:    REL NUMBER {std::cout << "rel"; strcpy($<relstr.relop>$, $1); $<relstr.num>$ = $2;}
+relation:    REL NUMBER {std::cout << "rel"; strcpy($<relstr.relop>$, $1); strcpy($<relstr.num>$, $2);}
     |        BIN        {std::cout << "BIN"; strcpy($<relstr.relop>$, "BI");}
     |        INT        {std::cout << "INT"; strcpy($<relstr.relop>$, "IN");}
     ;
@@ -127,35 +130,37 @@ lhs:    linear {std::cout << "LEFTSIDE\n"; LHS = EqSide; EqSide.clear();};
 rhs:    linear {std::cout << "RIGHT\n"; RHS = EqSide; EqSide.clear();};
 
 linear:     ID OPERATOR linear      {
-                                        for (auto it : variables)
+                                        pusher = $2;
+                                        EqSide.push_back(pusher);
+                                        for (auto& it : variables)
                                         {
                                             std::string id = $1;
                                             if( it.getID() == id)
                                             {
                                                 pusher = &it;
+                                                std::cout << std::get<Variable*>(pusher)->getID();
                                                 EqSide.push_back(pusher);
                                                 break;
                                             }
                                         }
-                                        pusher = $2;
-                                        EqSide.push_back(pusher);
+                                        
                                     }
 
     |       ID                      {
-                                        std::cout << "ID";
-                                        for (auto it : variables)
+                                        for (auto& it : variables)
                                         {
                                             std::string id = $1;
                                             if( it.getID() == id)
                                             {
                                                 pusher = &it;
+                                                std::cout << std::get<Variable*>(pusher)->getID();
                                                 EqSide.push_back(pusher);
                                                 break;
                                             }
                                         }
                                     }
     |       NUMBER OPERATOR linear  {pusher = $2; EqSide.push_back(pusher); pusher = $1; EqSide.push_back(pusher);}
-    |       NUMBER                  {std::cout << "NUMBER"; pusher = $1; EqSide.push_back(pusher);}
+    |       NUMBER                  {pusher = $1; EqSide.push_back(pusher);}
     ;
 
 obj:    comment objtype ID ':'  objlinear ';' {
@@ -176,6 +181,10 @@ objtype: MINI   {strcpy($$, $1);}
     ;
 
 comment: SCOMMENTS {std::cout << "COMMENT"; strncpy($$,$1+2, sizeof($1)); std::cout << $$;}
+    |   {strcpy($$, "");}
+    ;
+
+varcomment: VARCOMMENTS {strncpy($$,$1+3, sizeof($1));}
     |   {strcpy($$, "");}
     ;
 

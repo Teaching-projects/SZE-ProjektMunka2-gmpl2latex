@@ -32,26 +32,33 @@ int main(int argc, char **argv)
         return -1;
     }
 
-
     yyin = inputfile;
     yyparse();
 
     if(!ParseSuccessfull)
-    {
+    { 
+        std::cerr << "Parsing error!";
         return 1;
     }
 
-    /*
-    for (auto& k : constraints)
-    std::cout << "\n\n\n" << k.toString() << "\n\n\n";
-    */
-     std::cout << "\neddig ok1234\n";
     rapidjson::Document output;
-    output=createJson(1,variables);
-  std::cout << "\neddig ok1234\n";  
+    output=createJson(1,variables);  
     writeToFile("var.json","w",output);
-std::cout << "\neddig ok\n";
+
     /*
+    for (auto& v : variables)
+    {
+        std::cout << "\n" << v.getID() << v.getRelation() << v.getComment() << "\n";
+    }
+
+    for (auto& k : constraints)
+    {
+        std::cout << "\n\n\n" << k.getComment() << "\n" << k.toString() << "\n\n\n";
+
+    }
+
+    std::cout << object.getComment() << "\n" << object.toString(); 
+    
     std::ofstream vars,consts;
     vars.open("var.json");
     vars << "{\n";
