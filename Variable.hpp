@@ -4,17 +4,15 @@
 class Variable
 {
 private:
-
     const std::string ID;
     std::string inTex;
     const std::string relation;
-    std::string relnum;
+    std::string relnum; //previously an int value
     const std::string comment;
 
-    bool isWithNumber;
+	bool isWithNumber;
 
 public:
-
     Variable(const std::string id, const std::string rel, std::string& nm, std::string com) 
             : ID(id), inTex(ID), relation(rel), relnum(nm), comment(com), isWithNumber(true)
     {
@@ -26,6 +24,19 @@ public:
     {
 
     }
+  
+	  Variable(const Variable& other):ID(other.getID()), inTex(other.getInTex()), relation(other.getRelation()), 
+			  relnum(other.getRelnum()), comment(other.getComment()), isWithNumber(other.isWithNumber) {}
+
+	  /*Variable&operator=(const Variable&other) {
+		  this->comment = other.comment;
+		  this->ID = other.ID;
+		  this->inTex = other.inTex;
+		  this->isWithNumber = other.isWithNumber;
+		  this->relation = other.relation;
+		  this->relnum = other.relnum;
+		  return *this;
+	  }*/
 
     const std::string& getID() const
     {
@@ -66,8 +77,5 @@ public:
     {
         inTex = it;
     }
-
-
-
 
 };

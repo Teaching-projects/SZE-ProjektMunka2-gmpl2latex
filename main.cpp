@@ -10,6 +10,8 @@
 #include "Constraint.hpp"
 #include "Objective.hpp"
 
+#include "json_parser_project.h"
+
 extern FILE *yyin;
 extern FILE *yyout;
 extern int yyparse(void);
@@ -17,85 +19,74 @@ extern std::list<Variable> variables;
 extern std::list<Constraint> constraints;
 extern Objective object;
 extern bool ParseSuccessfull;
+
 std::ofstream toTeX;
 
 int main(int argc, char **argv)
 {
+    std::string inF, outF;
+    if(argc == 4 || argc==6){
+        if(argc == 4){
+            std::string cj = "--createjson";
+            if(argv[2] == cj){
+                FILE *inputfile = fopen(argv[1], "r");
+                if (!inputfile)
+                {
+                    std::cerr << "Can't open file!\n";
+                    return -1;
+                }
+                yyin = inputfile;
+                yyparse();
+                if(!ParseSuccessfull)
+                { 
+                    std::cerr << "Parsing error!";
+                    return 1;
+                }
 
-//    toTeX.open("output.txt");
+                rapidjson::Document output;
+                output=createJson(1,variables);  
+                writeToFile(argv[3],"w",output);
+            }else{
+                std::cerr << argv[2]<<" Invalid type of arguments\n";
+                return -1;
+            }
+        }else{
+            std::string jsonInp = "var.json"; 
+            std::string texout = ""; 
+            std::string rj = "--readjson";
+            std::string ot = "--outputtex";
+            if(argv[2] == rj){
+                jsonInp ==argv[3];
+            }
+            if(argv[4] == ot){
+                texout ==argv[5];
+            }
+            FILE *inputfile = fopen(argv[1], "r");
+            if (!inputfile)
+            {
+                std::cerr << "Can't open file!\n";
+                return -1;
+            }
 
-    FILE *inputfile = fopen(argv[1], "r");
-    if (!inputfile)
-    {
-        std::cerr << "Can't open file!\n";
+            yyin = inputfile;
+            yyparse();
+
+            std::map<std::string,std::string> VariableNames;
+            std::string usageMode = "r";
+            VariableNames=jsonToMap(jsonInp.c_str(),"r");
+
+            // change toTex values in variables to ones read from json
+            std::string changeto;
+            for(auto v: variables){
+                changeto=VariableNames[v.getID()];
+                v.setInTex(changeto);
+            }
+            // write to tex file
+        }
+    }else{
+        std::cerr << "Invalid number of arguments\n";
         return -1;
     }
 
-
-    yyin = inputfile;
-    yyparse();
-
-    if(!ParseSuccessfull)
-    {
-        std::cout << "Parsing error!";
-        return 1;
-    }
-
-    for (auto& v : variables)
-    {
-        std::cout << "\n" << v.getID() << v.getRelation() << v.getComment() << "\n";
-    }
-
-    for (auto& k : constraints)
-    {
-        std::cout << "\n\n\n" << k.getComment() << "\n" << k.toString() << "\n\n\n";
-
-    }
-
-    std::cout << object.getComment() << "\n" << object.toString(); 
-
-    std::ofstream vars,consts;
-    vars.open("var.json");
-
-    
-    
-    vars << "{\n";
-    for(auto& v : variables)
-    {
-        vars << "\t\"" << v.getID() << "\" : \"" << v.getInTex() << "\"";
-        if(&v != &variables.back()) vars << ",";
-        vars << "\n";
-
-    }
-    vars << "}";
-
- //   toTeX.close();
-
-    /*std::ofstream vars,consts;
-    vars.open("var.json");
-    consts.open("constr.json");
-
-    std::cout << "\n\nList of variables:\n";
-    vars << "{\n";
-    consts << "{\n";
-    for(auto v: variables)
-    {
-        std::cout << "gmpl: "<< v.first  << " LaTex: " << v.second  << '\n';
-        vars << "\t\"" << v.first << "\" : \"" << v.second <<"\"\n";
-
-    }
-    std::cout << "\nList of constraints:\n";
-    for(auto v: constraints)
-    {
-        std::cout << "gmpl: " << v.first << " LaTex: " << v.second << '\n';
-        consts << "\t\"" << v.first << "\" : \"" << v.second << "\"\n";
-    }
-    vars << "}\n";
-    consts << "}\n";
-
-    vars.close();
-    consts.close();*/
-
-    fclose(inputfile);
     return 0;
 }

@@ -1,5 +1,7 @@
 {
-	"KF" : "KF",
-	"NF" : "NF",
-	"HL" : "HL"
+    "Variables": {
+        "KF": "KF",
+        "NF": "NF",
+        "HL": "HL"
+    }
 }
