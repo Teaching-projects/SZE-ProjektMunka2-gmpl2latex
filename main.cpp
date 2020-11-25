@@ -58,7 +58,7 @@ int main(int argc, char **argv)
             std::string htmlout = "";  
             std::string rj = "--readjson";
             std::string ot = "--outputtex";
-            std::string ot = "--outputhtml";
+            std::string oh = "--outputhtml";
             if(argv[2] == rj){
                 jsonInp ==argv[3];
             }
