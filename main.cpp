@@ -45,9 +45,6 @@ int main(int argc, char **argv)
                     return 1;
                 }
 
-                SampleOutput so(variables, constraints, object);
-                so.Write("outputTex.txt");
-
                 rapidjson::Document output;
                 output=createJson(1,variables);  
                 writeToFile(argv[3],"w",output);
@@ -57,14 +54,18 @@ int main(int argc, char **argv)
             }
         }else{
             std::string jsonInp = "var.json"; 
-            std::string texout = ""; 
+            std::string texout = "";
+            std::string htmlout = "";  
             std::string rj = "--readjson";
             std::string ot = "--outputtex";
+            std::string ot = "--outputhtml";
             if(argv[2] == rj){
                 jsonInp ==argv[3];
             }
             if(argv[4] == ot){
                 texout ==argv[5];
+            }else if (argv[4] == oh){
+                htmlout ==argv[5];
             }
             FILE *inputfile = fopen(argv[1], "r");
             if (!inputfile)
@@ -86,7 +87,13 @@ int main(int argc, char **argv)
                 changeto=VariableNames[v.getID()];
                 v.setInTex(changeto);
             }
-            // write to tex file
+            if (texout != ""){
+                // write to tex file
+                SampleOutput so(variables, constraints, object);
+                so.Write("outputTex.txt");
+            }else if (htmlout != ""){
+                // write to html file
+            }
         }
     }else{
         std::cerr << "Invalid number of arguments\n";
