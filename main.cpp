@@ -12,6 +12,8 @@
 
 #include "json_parser_project.h"
 
+#include "SampleOutput.hpp"
+
 extern FILE *yyin;
 extern FILE *yyout;
 extern int yyparse(void);
@@ -42,6 +44,9 @@ int main(int argc, char **argv)
                     std::cerr << "Parsing error!";
                     return 1;
                 }
+
+                SampleOutput so(variables, constraints, object);
+                so.Write("outputTex.txt");
 
                 rapidjson::Document output;
                 output=createJson(1,variables);  

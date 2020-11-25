@@ -79,4 +79,18 @@ public:
     {
         return comment;
     }
+
+    const std::list<std::variant<Variable*, char, std::string>>& getLeft() const
+    {
+        return LHS;
+    }
+    const std::list<std::variant<Variable*, char, std::string>>& getRight() const
+    {
+        return RHS;
+    }
+
+    const std::string getRelation() const
+    {
+        return relation;
+    }
 };

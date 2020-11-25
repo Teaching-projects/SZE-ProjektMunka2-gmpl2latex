@@ -73,4 +73,9 @@ public:
 
         return returner;
     }
+
+    const std::list<std::variant<Variable*, char, std::string>>& getLeft() const
+    {
+        return LHS;
+    }
 };
