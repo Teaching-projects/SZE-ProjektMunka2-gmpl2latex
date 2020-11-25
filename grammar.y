@@ -75,10 +75,10 @@
 
 %%
 
-file: vardecs  constdecs obj {std::cout << "FILE"; ParseSuccessfull = true;}
+file: vardecs  constdecs obj {ParseSuccessfull = true;}
     ;
 
-vardecs: vardecs vardec  {std::cout << "vardecs";}
+vardecs: vardecs vardec  
     |
     ;
 
@@ -87,8 +87,11 @@ vardec: VARKEYWORD ID relation ';' varcomment
 
                         if ($3.relop[0] != 'B' && $3.relop[0] != 'I')
                         {
-                            std::string a = $3.num;
-                            Variable newVar($2, $3.relop, a, $5);
+                            std::string number = $3.num;
+                            std::string op = $3.relop;
+                            op.pop_back();
+                            
+                            Variable newVar($2, op, number, $5);
                             variables.push_back(newVar);
                         }
                         else
@@ -101,18 +104,18 @@ vardec: VARKEYWORD ID relation ';' varcomment
                     }
     ;
 
-relation:    REL NUMBER {std::cout << "rel"; strcpy($<relstr.relop>$, $1); strcpy($<relstr.num>$, $2);}
-    |        BIN        {std::cout << "BIN"; strcpy($<relstr.relop>$, "BI");}
-    |        INT        {std::cout << "INT"; strcpy($<relstr.relop>$, "IN");}
+relation:    REL NUMBER {strcpy($<relstr.relop>$, $1); strcpy($<relstr.num>$, $2);}
+    |        BIN        {strcpy($<relstr.relop>$, "BI");}
+    |        INT        {strcpy($<relstr.relop>$, "IN");}
     ;
 
 
-constdecs: constdecs constdec    {std::cout << "constdecS";}
+constdecs: constdecs constdec    
     |
     ;
 
 constdec: comment STKEYWORD ID ':'  equation   {
-                                                    std::cout << "constdec";
+                                                    
                                                     std::string re = $5;
                                                     std::string com = $1;
                                                     LHS.reverse();
@@ -123,11 +126,11 @@ constdec: comment STKEYWORD ID ':'  equation   {
                                                }
     ;
 
-equation:   lhs REL rhs ';' {std::cout << "EQU"; strcpy($$, $2);}
+equation:   lhs REL rhs ';' {strcpy($$, $2);}
     ;
 
-lhs:    linear {std::cout << "LEFTSIDE\n"; LHS = EqSide; EqSide.clear();};
-rhs:    linear {std::cout << "RIGHT\n"; RHS = EqSide; EqSide.clear();};
+lhs:    linear { LHS = EqSide; EqSide.clear();};
+rhs:    linear { RHS = EqSide; EqSide.clear();};
 
 linear:     ID OPERATOR linear      {
                                         pusher = $2;
@@ -138,7 +141,6 @@ linear:     ID OPERATOR linear      {
                                             if( it.getID() == id)
                                             {
                                                 pusher = &it;
-                                                std::cout << std::get<Variable*>(pusher)->getID();
                                                 EqSide.push_back(pusher);
                                                 break;
                                             }
@@ -153,7 +155,6 @@ linear:     ID OPERATOR linear      {
                                             if( it.getID() == id)
                                             {
                                                 pusher = &it;
-                                                std::cout << std::get<Variable*>(pusher)->getID();
                                                 EqSide.push_back(pusher);
                                                 break;
                                             }
@@ -164,10 +165,10 @@ linear:     ID OPERATOR linear      {
     ;
 
 obj:    comment objtype ID ':'  objlinear ';' {
-                                                std::cout << "OBJECTIVE";
                                                 
                                                 std::string comment = $1;
                                                 std::string otype = $2;
+                                                OBJ.reverse();
 
                                                 object = Objective(OBJ, otype, comment);
 
@@ -180,7 +181,7 @@ objtype: MINI   {strcpy($$, $1);}
     |    MAXI   {strcpy($$, $1);}
     ;
 
-comment: SCOMMENTS {std::cout << "COMMENT"; strncpy($$,$1+2, sizeof($1)); std::cout << $$;}
+comment: SCOMMENTS {strncpy($$,$1+2, sizeof($1));}
     |   {strcpy($$, "");}
     ;
 
