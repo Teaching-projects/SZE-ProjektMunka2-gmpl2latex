@@ -10,3 +10,4 @@ then
 fi
 
 ./a.out $INPF --createjson var.json >> $FILE
+./a.out $INPF --readjson ./Tests/modvar.json --outputtex texOutput.tex
