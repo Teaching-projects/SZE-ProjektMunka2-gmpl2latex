@@ -153,8 +153,8 @@ private:
             {
                 try
                 {
-                        std::string number = std::get<std::string>(element);
-                        inTex << number << " ";
+                    std::string number = std::get<std::string>(element);
+                    inTex << number << " ";
                 }
                 catch(const std::bad_variant_access&)
                 {
@@ -187,7 +187,7 @@ public:
         inTex << "Constraints\n\n";
         writeConstraints(inTex);
 
-        inTex << "Obejct function\n\n";
+        inTex << "Object function\n\n";
         writeObjective(inTex);
 
         

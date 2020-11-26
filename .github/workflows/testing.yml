@@ -21,3 +21,4 @@ jobs:
         if: ${{ steps.make.conclusion == 'success' }}
       - run: diff Tests/exp_json_out.json var.json
         if: ${{ steps.run_test.conclusion == 'success' }}
+      - run: diff Tests/exp_output.tex texOutput.tex

@@ -9,6 +9,7 @@
 #include "Variable.hpp"
 #include "Constraint.hpp"
 #include "Objective.hpp"
+#include "LatexOutput.hpp"
 
 #include "json_parser_project.h"
 
@@ -59,13 +60,17 @@ int main(int argc, char **argv)
             std::string rj = "--readjson";
             std::string ot = "--outputtex";
             std::string oh = "--outputhtml";
-            if(argv[2] == rj){
-                jsonInp ==argv[3];
+
+            std::string arg2 = argv[2];
+            std::string arg4 = argv[4];
+            std::string arg5 = argv[5];
+            if(arg2 == rj){
+                jsonInp = argv[3];
             }
-            if(argv[4] == ot){
-                texout ==argv[5];
-            }else if (argv[4] == oh){
-                htmlout ==argv[5];
+            if(arg4 == ot){
+                texout = arg5;
+            }else if (arg4 == oh){
+                htmlout = arg5;
             }
             FILE *inputfile = fopen(argv[1], "r");
             if (!inputfile)
@@ -83,14 +88,14 @@ int main(int argc, char **argv)
 
             // change toTex values in variables to ones read from json
             std::string changeto;
-            for(auto v: variables){
+            for(auto& v: variables){
                 changeto=VariableNames[v.getID()];
                 v.setInTex(changeto);
             }
             if (texout != ""){
                 // write to tex file
-                SampleOutput so(variables, constraints, object);
-                so.Write("outputTex.txt");
+                LatexOutput lo(variables, constraints, object);
+                lo.Write(texout);
             }else if (htmlout != ""){
                 // write to html file
             }
