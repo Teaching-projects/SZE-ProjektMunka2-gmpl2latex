@@ -8,9 +8,9 @@
 
 class Objective
 {
-    std::list<std::variant<Variable*, char, std::string>> LHS;
-    std::string relation;
-    std::string comment;
+    std::list<std::variant<Variable*, char, std::string>> LHS; //The linear expression that has to be maximized or minimized
+    std::string relation; //maximize or minimize
+    std::string comment; //Comment of the Objective function, marked with "#!" in the .mod file
 
 public:
     Objective(std::list<std::variant<Variable*, char, std::string>>& lh, const std::string& rel, const std::string& com):

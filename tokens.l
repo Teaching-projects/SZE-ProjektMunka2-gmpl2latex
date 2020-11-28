@@ -11,7 +11,6 @@ ALPHABET    [a-zA-Z]
 
 
 %%
-"exit"                                          return '\0';
 "var"                                           return VARKEYWORD;
 "s.t."                                          return STKEYWORD;
 "binary"                                        return BIN;

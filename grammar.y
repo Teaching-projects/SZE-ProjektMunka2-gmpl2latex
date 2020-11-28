@@ -41,7 +41,6 @@
     char name[16];
     char  val[32];
     char comment[1024];
-    enum relations {LessOrEqual,Equal,GreaterOrEqual};
     char obj_relations[8];
 
     struct relstruct 
@@ -60,7 +59,6 @@
 
 %token<comment> SCOMMENTS
 %token<comment> VARCOMMENTS
-%token<name> O_REL
 %token<rels> REL
 %token<name> MINI
 %token<name> MAXI
@@ -71,7 +69,6 @@
 %type<rels> equation
 %type<obj_relations> objtype
 
-//%type<name> rel
 
 %%
 
