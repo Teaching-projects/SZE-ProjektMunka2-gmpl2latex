@@ -10,7 +10,6 @@
 #include "Constraint.hpp"
 #include "Objective.hpp"
 #include "LatexOutput.hpp"
-#include "HtmlOutput.hpp"
 
 #include "json_parser_project.h"
 
@@ -29,6 +28,7 @@ std::ofstream toTeX;
 int main(int argc, char **argv)
 {
     std::string inF, outF;
+
     if(argc == 4 || argc==6){
         if(argc == 4){
             std::string cj = "--createjson";
@@ -99,12 +99,21 @@ int main(int argc, char **argv)
                 lo.Write(texout);
             }else if (htmlout != ""){
                 // write to html file
-                HtmlOutput ho(variables, constraints, object);
-                ho.Write(htmlout);
             }
         }
-    }else{
-        std::cerr << "Invalid number of arguments\n";
+    }
+	else if (argc == 2) {
+		std::string help = "--help";
+		if (argv[1] == help) {
+			std::cerr << "Usage:\nTo generate the json file in the first step use :\ngmpl2latex[input.mod] --createjson[vars.mod]\n;
+			std::cerr << "To generate the latex file in the second step use :\ngmpl2latex[input.mod] --readjson[vars.mod] --outputtex[example.tex]\n";
+			return -1
+		}
+		
+
+	}
+	else{
+        std::cerr << "Invalid number of arguments\nPlease enter --help option for more information about usage. ";
         return -1;
     }
 
