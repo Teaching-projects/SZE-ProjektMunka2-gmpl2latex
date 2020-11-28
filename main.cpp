@@ -45,7 +45,7 @@ int main(int argc, char **argv)
                 if(!ParseSuccessfull)
                 { 
                     std::cerr << "Parsing error!";
-                    return 1;
+                    return -1;
                 }
 
                 rapidjson::Document output;
@@ -86,13 +86,31 @@ int main(int argc, char **argv)
 
             std::map<std::string,std::string> VariableNames;
             std::string usageMode = "r";
-            VariableNames=jsonToMap(jsonInp.c_str(),"r");
+            try
+            {
+                VariableNames=jsonToMap(jsonInp.c_str(),"r");
+            }
+            catch(const char*)
+            {
+                std::cerr << "There is an error in json structure. Aborting.\n";
+                return -1;
+            }
 
             // change toTex values in variables to ones read from json
             std::string changeto;
             for(auto& v: variables){
-                changeto=VariableNames[v.getID()];
-                v.setInTex(changeto);
+                try
+                {
+                    changeto = VariableNames.at(v.getID());
+                    //changeto=VariableNames[v.getID()];
+                    v.setInTex(changeto);
+                }
+                catch(const std::out_of_range&)
+                {
+                    std::cerr << "Variable " << v.getID() << " is not in the json file. Aborting.\n";
+                    return -1;
+                }
+                
             }
             if (texout != ""){
                 // write to tex file
@@ -108,15 +126,15 @@ int main(int argc, char **argv)
 	else if (argc == 2) {
 		std::string help = "--help";
 		if (argv[1] == help) {
-			std::cerr << "Usage:\nTo generate the json file in the first step use :\ngmpl2latex[input.mod] --createjson[vars.mod]\n";
-			std::cerr << "To generate the latex file in the second step use :\ngmpl2latex[input.mod] --readjson[vars.mod] --outputtex[example.tex]\n";
+			std::cerr << "Usage:\nTo generate the json file in the first step use :\ngmpl2latex[input.mod] --createjson[vars.mod]\n\n";
+			std::cerr << "To generate the latex file in the second step use :\ngmpl2latex[input.mod] --readjson[vars.mod] --outputtex[example.tex]\n\n";
 			return -1;
 		}
 		
 
 	}
 	else{
-        std::cerr << "Invalid number of arguments\nPlease enter --help option for more information about usage. ";
+        std::cerr << "Invalid number of arguments\nPlease enter --help option for more information about usage. \n";
         return -1;
     }
 

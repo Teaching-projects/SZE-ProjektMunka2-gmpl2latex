@@ -9,5 +9,5 @@ then
 	rm $FILE
 fi
 
-./a.out $INPF --createjson var.json >> $FILE
-./a.out $INPF --readjson ./Tests/modvar.json --outputtex texOutput.tex
+./gmpl2latex $INPF --createjson var.json
+./gmpl2latex $INPF --readjson ./Tests/modvar.json --outputtex texOutput.tex

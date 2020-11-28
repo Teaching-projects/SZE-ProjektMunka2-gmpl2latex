@@ -159,7 +159,7 @@ void LatexOutput::Write(const std::string& fname) const
     //Objective subsection
     inTex << "\t\\subsubsection*{Objective}\n\n";
     writeObjective(inTex);
-    inTex << "\\end{document}";
+    inTex << "\\end{document}\n";
     
     inTex.close();
 }
