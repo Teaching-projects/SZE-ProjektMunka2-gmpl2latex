@@ -6,12 +6,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: vbence121/projektmunka2_2020:latest
     steps:
       - uses: actions/checkout@v2
-      - name: Get_rapidjson
-        run: sudo apt-get install rapidjson-dev
-      - name: update gcc
-        run: sudo apt --only-upgrade install g++-10 gcc-10 
       - name: make
         id: make
         run: make
