@@ -68,35 +68,9 @@ rapidjson::Value objectCreator(const STLCONTAINER& next, rapidjson::Document&out
 	}
 	return ret;
 }
-/*DEPRECATED*/
-/*rapidjson::Value setOfSetsCreator(STLCONTAINER next, rapidjson::Document&output) {
-	rapidjson::Value ret(rapidjson::kObjectType);
-	rapidjson::Value name(rapidjson::kStringType);
-	rapidjson::Value val(rapidjson::kObjectType);
-	rapidjson::Document::AllocatorType& allocator = output.GetAllocator();
-	for (STLCONTAINER::iterator it = next.begin(); it != next.end(); ++it) {
-		rapidjson::Value tmpSet(rapidjson::kObjectType);
-		std::string tmp = *it;
-		std::string tmpVal = tmp;
-		std::string tmpName = tmp + "_name";
-		tmpVal = toupper(tmp[0]);
-		val.SetString(tmpVal.c_str(), static_cast<rapidjson::SizeType>(tmpVal.length()), allocator);
-		name.SetString(tmpName.c_str(), allocator);
-		tmpSet.AddMember(name, val, allocator);
-		tmpName = tmp + "_default-index";
-		tmpVal = tolower(tmp[0]);
-		val.SetString(tmpVal.c_str(), static_cast<rapidjson::SizeType>(tmpVal.length()), allocator);
-		name.SetString(tmpName.c_str(), allocator);
-		tmpSet.AddMember(name, val, allocator);
-		ret.AddMember(rapidjson::Value(tmp.c_str(), static_cast<rapidjson::SizeType>(tmp.length()), allocator), tmpSet, allocator);
-	}
-	return ret;
-}*/
-/*END DEPRECATED*/
 
 rapidjson::Document createJson(int componentsCount, const STLCONTAINER& tmpVector) {
 
-	//STLCONTAINER tmpVector;
 	rapidjson::Document output;
 	output.SetObject();
 	va_list components;
@@ -105,13 +79,6 @@ rapidjson::Document createJson(int componentsCount, const STLCONTAINER& tmpVecto
 	}
 	else
 	{
-		/*for (int i = 0; i < componentsCount; i++)
-		{
-			tmpVector = va_arg(components, STLCONTAINER);
-			if (i == 0) { output.AddMember("Sets", setOfSetsCreator(tmpVector, output), output.GetAllocator()); }
-			else if (i == 1) { output.AddMember("Parameters", objectCreator(tmpVector, output), output.GetAllocator()); }
-			else if (i == 2) { output.AddMember("Variables", objectCreator(tmpVector, output), output.GetAllocator()); }
-		}*/
 		std::cerr << "The program doesn't support a complex example at the moment" << std::endl;
 	}
 	va_end(components);

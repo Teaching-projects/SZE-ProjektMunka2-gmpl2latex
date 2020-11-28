@@ -22,59 +22,6 @@ public:
 
             }
 
-    std::string toString()
-    {
-        std::string returner = "";
-
-        for(auto& it : LHS)
-        {
-            try
-            {
-                Variable* var = std::get<Variable*>(it);
-                returner += var->getID();
-            }
-            catch(const std::bad_variant_access&)
-            {
-                try
-                {
-                    char op = std::get<char>(it);
-                    returner += op;
-                }
-                catch (const std::bad_variant_access&)
-                {
-                    //int num = std::get<int>(it);
-                    returner += std::get<std::string>(it);
-                }
-            }
-        }
-
-        returner += relation;
-
-        for(auto& it : RHS)
-        {
-            try
-            {
-                Variable* var = std::get<Variable*>(it);
-                returner += var->getID();
-            }
-            catch(const std::bad_variant_access&)
-            {
-                try
-                {
-                    char op = std::get<char>(it);
-                    returner += op;
-                }
-                catch (const std::bad_variant_access&)
-                {
-                    //int num = std::get<int>(it);
-                    returner += std::get<std::string>(it);;
-                }
-            }
-        }
-
-        return returner;
-    }
-
     std::string getComment() const
     {
         return comment;

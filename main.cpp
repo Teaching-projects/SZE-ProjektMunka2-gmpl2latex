@@ -14,8 +14,6 @@
 
 #include "json_parser_project.h"
 
-#include "SampleOutput.hpp"
-
 extern FILE *yyin;
 extern FILE *yyout;
 extern int yyparse(void);
