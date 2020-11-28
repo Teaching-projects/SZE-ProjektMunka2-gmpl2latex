@@ -99,6 +99,8 @@ int main(int argc, char **argv)
                 lo.Write(texout);
             }else if (htmlout != ""){
                 // write to html file
+				HtmlOutput ho(variables, constraints, object);
+				ho.Write(htmlout);
             }
         }
     }
