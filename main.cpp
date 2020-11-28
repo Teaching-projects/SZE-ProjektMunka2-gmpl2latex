@@ -105,9 +105,9 @@ int main(int argc, char **argv)
 	else if (argc == 2) {
 		std::string help = "--help";
 		if (argv[1] == help) {
-			std::cerr << "Usage:\nTo generate the json file in the first step use :\ngmpl2latex[input.mod] --createjson[vars.mod]\n;
+			std::cerr << "Usage:\nTo generate the json file in the first step use :\ngmpl2latex[input.mod] --createjson[vars.mod]\n";
 			std::cerr << "To generate the latex file in the second step use :\ngmpl2latex[input.mod] --readjson[vars.mod] --outputtex[example.tex]\n";
-			return -1
+			return -1;
 		}
 		
 
