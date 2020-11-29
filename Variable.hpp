@@ -4,23 +4,22 @@
 class Variable
 {
 private:
-    const std::string ID;
-    std::string inTex;
-    const std::string relation;
-    std::string relnum; //previously an int value
-    const std::string comment;
-
-	bool isWithNumber;
+    const std::string ID; //Name of the variabla
+    std::string inTex; //Optionally changed name, read from json
+    const std::string relation; //LessOrEqual, GreaterOrEqual, Equal, Binary or Integer
+    std::string relnum; //The number the previous relation applies to
+    const std::string comment; //Comment for the variable marked with "#!<" in the .mod file
 
 public:
+    //Constructor for variable with a number on the other side of the relation
     Variable(const std::string id, const std::string rel, std::string& nm, std::string com) 
-            : ID(id), inTex(ID), relation(rel), relnum(nm), comment(com), isWithNumber(true)
+            : ID(id), inTex(ID), relation(rel), relnum(nm), comment(com)
     {
 
     }
-
+    //Constructor for variable that is binary or integer
     Variable(const std::string id, const std::string rel, std::string com) 
-            : ID(id), inTex(ID), relation(rel), comment(com), isWithNumber(false)
+            : ID(id), inTex(ID), relation(rel), comment(com)
     {
 
     }
@@ -48,16 +47,6 @@ public:
     const std::string& getComment() const
     {
         return comment;
-    }
-
-    const std::string getFUllRel() const
-    {
-        if(isWithNumber)
-        {
-            return getRelation() + getRelnum();
-        }
-            
-        return getRelation();
     }
 
     const std::string getRelnum() const

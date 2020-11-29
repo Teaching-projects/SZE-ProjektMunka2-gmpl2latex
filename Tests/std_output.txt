@@ -1,9 +1,0 @@
-
-eddig ok
-
-eddig ok
-relvardecsrelvardecsrelvardecsCOMMENT This equation enforces that we dont use more than 100 l of wineHLNFKFLEFTSIDE
-RIGHT
-EQUconstdecconstdecSCOMMENT This is a similar constraint that limits the usage of carbonated water to 150lHLNFKFLEFTSIDE
-RIGHT
-EQUconstdecconstdecSCOMMENT The objective is to maximize the profit with 120 210 and 140 HUF of a price for a portion of Kisfroccs Nagyfroccs Hosszulepes respectivelyHLNFKFOBJECTIVEFILE

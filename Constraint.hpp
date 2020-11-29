@@ -8,10 +8,10 @@
 
 class Constraint
 {
-    std::list<std::variant<Variable*, char, std::string>> LHS;
-    std::list<std::variant<Variable*, char, std::string>> RHS;
-    std::string relation;
-    std::string comment;
+    std::list<std::variant<Variable*, char, std::string>> LHS; //Left Hand Side of the equation
+    std::list<std::variant<Variable*, char, std::string>> RHS; //Right Hand Side of the equation
+    std::string relation; //Relation between the two sides
+    std::string comment; //Comment for the constraint, marked with "#!" in the .mod file
 
 public:
     Constraint(std::list<std::variant<Variable*, char, std::string>>& lh,
@@ -21,59 +21,6 @@ public:
             {
 
             }
-
-    std::string toString()
-    {
-        std::string returner = "";
-
-        for(auto& it : LHS)
-        {
-            try
-            {
-                Variable* var = std::get<Variable*>(it);
-                returner += var->getID();
-            }
-            catch(const std::bad_variant_access&)
-            {
-                try
-                {
-                    char op = std::get<char>(it);
-                    returner += op;
-                }
-                catch (const std::bad_variant_access&)
-                {
-                    //int num = std::get<int>(it);
-                    returner += std::get<std::string>(it);
-                }
-            }
-        }
-
-        returner += relation;
-
-        for(auto& it : RHS)
-        {
-            try
-            {
-                Variable* var = std::get<Variable*>(it);
-                returner += var->getID();
-            }
-            catch(const std::bad_variant_access&)
-            {
-                try
-                {
-                    char op = std::get<char>(it);
-                    returner += op;
-                }
-                catch (const std::bad_variant_access&)
-                {
-                    //int num = std::get<int>(it);
-                    returner += std::get<std::string>(it);;
-                }
-            }
-        }
-
-        return returner;
-    }
 
     std::string getComment() const
     {

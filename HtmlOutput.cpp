@@ -157,7 +157,7 @@ void HtmlOutput::Write(const std::string& fname) const
     //Objective subsection
     inTex << "<h4>Objective</h4>\n\n";
     HtmlOutput::writeObjective(inTex);
-    inTex << "<script src=\"https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>\n</body>\n</html>";
+    inTex << "<script src=\"https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>\n</body>\n</html>\n";
     
     inTex.close();
 }

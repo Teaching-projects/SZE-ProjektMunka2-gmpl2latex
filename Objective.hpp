@@ -8,9 +8,9 @@
 
 class Objective
 {
-    std::list<std::variant<Variable*, char, std::string>> LHS;
-    std::string relation;
-    std::string comment;
+    std::list<std::variant<Variable*, char, std::string>> LHS; //The linear expression that has to be maximized or minimized
+    std::string relation; //maximize or minimize
+    std::string comment; //Comment of the Objective function, marked with "#!" in the .mod file
 
 public:
     Objective(std::list<std::variant<Variable*, char, std::string>>& lh, const std::string& rel, const std::string& com):
@@ -42,36 +42,6 @@ public:
     std::string getRelation() const
     {
         return relation;
-    }
-
-    std::string toString()
-    {
-        std::string returner = "";
-
-        for(auto& it : LHS)
-        {
-            try
-            {
-                Variable* var = std::get<Variable*>(it);
-                returner += var->getID();
-            }
-            catch(const std::bad_variant_access&)
-            {
-                try
-                {
-                    char op = std::get<char>(it);
-                    returner += op;
-                }
-                catch (const std::bad_variant_access&)
-                {
-                    returner += std::get<std::string>(it);
-                }
-            }
-        }
-
-        returner += relation;
-
-        return returner;
     }
 
     const std::list<std::variant<Variable*, char, std::string>>& getLeft() const
