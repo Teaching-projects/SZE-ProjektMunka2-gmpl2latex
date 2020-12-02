@@ -1,4 +1,5 @@
 #include "HtmlOutput.hpp"
+#include <iostream>
 
 HtmlOutput::HtmlOutput(const std::list<Variable>& vars, const std::list<Constraint>& cons, const Objective& obj) 
             : variables(vars), constraints(cons), object(obj)
@@ -15,11 +16,11 @@ void HtmlOutput::writeVariables(std::ofstream& inTex) const
 
             if(var.getRelation() == "IN")
             {
-                inTex << " \\in \\mathbb{Z} \\]";
+                inTex << " \\in \\mathbb{Z} \\)";
             }
             else if(var.getRelation() == "BI")
             {
-                inTex << " \\in\\{0,1\\} \\]";
+                inTex << " \\in\\{0,1\\}\\)";
             }
             else if(var.getRelation() == "<=")
             {
@@ -29,6 +30,10 @@ void HtmlOutput::writeVariables(std::ofstream& inTex) const
             {
                 
                 inTex << "\\in[" <<var.getRelnum() << ",\\infty[\\)";
+            }
+            else if(var.getRelation() == "")
+            {
+                inTex << " = " << var.getRelnum() << "\\)";
             }
 
             inTex << "</dt> <dd>" << var.getComment() << "</dd>\n";

@@ -30,6 +30,10 @@ void LatexOutput::writeVariables(std::ofstream& inTex) const
                 
                 inTex << "\\in[" <<var.getRelnum() << ",\\infty[$]";
             }
+            else if(var.getRelation() == "")
+            {
+                inTex << " = " << var.getRelnum() << " $]";
+            }
 
             inTex << var.getComment() << "\n";
         }
